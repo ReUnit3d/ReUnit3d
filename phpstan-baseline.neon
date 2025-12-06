@@ -1,12 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: '#^Call to function is_int\(\) with string\|null will always evaluate to false\.$#'
-			identifier: function.impossibleType
-			count: 1
-			path: app/Actions/Fortify/CreateNewUser.php
-
-		-
 			message: '#^Instanceof between App\\Models\\User and Illuminate\\Contracts\\Auth\\MustVerifyEmail will always evaluate to true\.$#'
 			identifier: instanceof.alwaysTrue
 			count: 1
@@ -251,6 +245,12 @@ parameters:
 			identifier: argument.unresolvableType
 			count: 1
 			path: app/Http/Controllers/API/TorrentController.php
+
+		-
+			message: '#^Call to function is_int\(\) with string\|null will always evaluate to false\.$#'
+			identifier: function.impossibleType
+			count: 1
+			path: app/Http/Controllers/Auth/RegisteredUserController.php
 
 		-
 			message: '#^Method App\\Http\\Controllers\\AnnounceController\:\:index\(\) never returns null so it can be removed from the return type\.$#'
@@ -535,14 +535,8 @@ parameters:
 			path: app/Providers/AppServiceProvider.php
 
 		-
-			message: '#^Method Laravel\\Fortify\\Contracts\\LoginResponse@anonymous/app/Providers/FortifyServiceProvider\.php\:50\:\:toResponse\(\) should return Illuminate\\Http\\RedirectResponse but returns Illuminate\\Http\\RedirectResponse\|true\.$#'
+			message: '#^Method Laravel\\Fortify\\Contracts\\LoginResponse@anonymous/app/Providers/FortifyServiceProvider\.php\:48\:\:toResponse\(\) should return Illuminate\\Http\\RedirectResponse but returns Illuminate\\Http\\RedirectResponse\|true\.$#'
 			identifier: return.type
-			count: 1
-			path: app/Providers/FortifyServiceProvider.php
-
-		-
-			message: '#^Method Laravel\\Fortify\\Contracts\\RegisterViewResponse@anonymous/app/Providers/FortifyServiceProvider\.php\:95\:\:toResponse\(\) never returns Illuminate\\Http\\RedirectResponse so it can be removed from the return type\.$#'
-			identifier: return.unusedType
 			count: 1
 			path: app/Providers/FortifyServiceProvider.php
 

@@ -16,7 +16,6 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
-use App\Actions\Fortify\CreateNewUser;
 use App\Actions\Fortify\UpdateUserPassword;
 use App\Actions\Fortify\UpdateUserProfileInformation;
 use App\Models\BlockedIp;
@@ -34,7 +33,6 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Laravel\Fortify\Contracts\LoginResponse;
-use Laravel\Fortify\Contracts\RegisterViewResponse;
 use Laravel\Fortify\Fortify;
 
 use function Illuminate\Support\defer;
@@ -90,18 +88,6 @@ class FortifyServiceProvider extends ServiceProvider
                     ->with('success', trans('auth.welcome'));
             }
         });
-
-        // Handle redirects before the registration form is shown
-        $this->app->instance(RegisterViewResponse::class, new class () implements RegisterViewResponse {
-            public function toResponse($request): \Illuminate\Http\RedirectResponse|\Illuminate\View\View
-            {
-                if ($request->missing('code')) {
-                    return view('auth.register');
-                }
-
-                return view('auth.register', ['code' => $request->query('code')]);
-            }
-        });
     }
 
     /**
@@ -111,15 +97,12 @@ class FortifyServiceProvider extends ServiceProvider
     {
         RateLimiter::for('login', fn (Request $request) => Limit::perMinute(5)->by('fortify-login'.$request->ip()));
         RateLimiter::for('fortify-login-get', fn (Request $request) => Limit::perMinute(5)->by('fortify-login'.$request->ip()));
-        RateLimiter::for('fortify-register-get', fn (Request $request) => Limit::perMinute(5)->by('fortify-register'.$request->ip()));
-        RateLimiter::for('fortify-register-post', fn (Request $request) => Limit::perMinute(5)->by('fortify-register'.$request->ip()));
         RateLimiter::for('two-factor', fn (Request $request) => Limit::perMinute(5)->by('fortify-two-factor'.$request->session()->get('login.id')));
 
         Fortify::loginView(fn () => view('auth.login'));
         Fortify::confirmPasswordView(fn () => view('auth.confirm-password'));
         Fortify::twoFactorChallengeView(fn () => view('auth.two-factor-challenge'));
 
-        Fortify::createUsersUsing(CreateNewUser::class);
         Fortify::updateUserProfileInformationUsing(UpdateUserProfileInformation::class);
         Fortify::updateUserPasswordsUsing(UpdateUserPassword::class);
 
