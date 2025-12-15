@@ -64,9 +64,9 @@ class IRCAnnounceBotExternal
 
         if ($torrent->tmdb_movie_id > 0 || $torrent->tmdb_tv_id > 0) {
             $meta = match (true) {
-                $category->tv_meta    => TmdbTv::find($torrent->tmdb_tv_id),
-                $category->movie_meta => TmdbMovie::find($torrent->tmdb_movie_id),
-                $category->game_meta  => IgdbGame::find($torrent->igdb),
+                $category->tv_meta    => TmdbTv::query()->find($torrent->tmdb_tv_id),
+                $category->movie_meta => TmdbMovie::query()->find($torrent->tmdb_movie_id),
+                $category->game_meta  => IgdbGame::query()->find($torrent->igdb),
                 default               => null,
             };
         }

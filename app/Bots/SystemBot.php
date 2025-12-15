@@ -41,7 +41,7 @@ class SystemBot
 
     public function __construct(private readonly ChatRepository $chatRepository)
     {
-        $this->bot = Bot::where('is_systembot', '=', true)->sole();
+        $this->bot = Bot::query()->where('is_systembot', '=', true)->sole();
     }
 
     public function replaceVars(string $output): string
@@ -50,7 +50,7 @@ class SystemBot
 
         if (str_contains($output, '{bots}')) {
             $botHelp = '';
-            $bots = Bot::where('active', '=', 1)->where('id', '!=', $this->bot->id)->oldest('position')->get();
+            $bots = Bot::query()->where('active', '=', 1)->where('id', '!=', $this->bot->id)->oldest('position')->get();
 
             foreach ($bots as $bot) {
                 $botHelp .= '( ! | / | @)'.$bot->command.' help triggers help file for '.$bot->name."\n";
@@ -84,7 +84,7 @@ class SystemBot
         ]);
 
         if ($v->passes()) {
-            $recipient = User::where('username', 'LIKE', $receiver)->first();
+            $recipient = User::query()->where('username', 'LIKE', $receiver)->first();
 
             if (!$recipient || $recipient->id === $this->target->id) {
                 return 'Your BON gift could not be sent.';
@@ -95,7 +95,7 @@ class SystemBot
             $recipient->increment('seedbonus', $amount);
             $this->target->decrement('seedbonus', $amount);
 
-            $gift = Gift::create([
+            $gift = Gift::query()->create([
                 'sender_id'    => $this->target->id,
                 'recipient_id' => $recipient->id,
                 'bon'          => $amount,

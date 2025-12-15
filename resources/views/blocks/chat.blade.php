@@ -1,5 +1,7 @@
 @php
-    $user = App\Models\User::with(['chatroom', 'group', 'settings'])->find(auth()->id());
+    $user = App\Models\User::query()
+    ->with(['chatroom', 'group', 'settings'])
+    ->find(auth()->id());
 @endphp
 
 <section

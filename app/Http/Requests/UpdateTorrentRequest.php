@@ -55,12 +55,12 @@ class UpdateTorrentRequest extends FormRequest
      */
     public function rules(Request $request): array
     {
-        $category = Category::findOrFail($request->integer('category_id'));
+        $category = Category::query()->findOrFail($request->integer('category_id'));
 
         /** @var string $torrentId */
         $torrentId = $request->route('id');
 
-        $torrent = Torrent::withoutGlobalScope(ApprovedScope::class)->find($torrentId);
+        $torrent = Torrent::query()->withoutGlobalScope(ApprovedScope::class)->find($torrentId);
         $user = $request->user()->load('group')->loadExists('internals');
 
         $mustBeNull = function (string $attribute, mixed $value, callable $fail): void {

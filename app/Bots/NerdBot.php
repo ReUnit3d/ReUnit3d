@@ -50,7 +50,7 @@ class NerdBot
 
     public function __construct(private readonly ChatRepository $chatRepository)
     {
-        $this->bot = Bot::findOrFail(2);
+        $this->bot = Bot::query()->findOrFail(2);
         $this->expiresAt = Carbon::now()->addMinutes(60);
         $this->current = Carbon::now();
         $this->site = config('other.title');
@@ -62,7 +62,7 @@ class NerdBot
 
         if (str_contains((string) $output, '{bots}')) {
             $botHelp = '';
-            $bots = Bot::where('active', '=', 1)->where('id', '!=', $this->bot->id)->orderBy('position')->get();
+            $bots = Bot::query()->where('active', '=', 1)->where('id', '!=', $this->bot->id)->orderBy('position')->get();
 
             foreach ($bots as $bot) {
                 $botHelp .= '( ! | / | @)'.$bot->command.' help triggers help file for '.$bot->name."\n";
@@ -79,7 +79,7 @@ class NerdBot
         $banker = cache()->remember(
             'nerdbot-banker',
             $this->expiresAt,
-            fn () => User::orderByDesc('seedbonus')->first()
+            fn () => User::query()->orderByDesc('seedbonus')->first()
         );
 
         return "Currently [url=/users/{$banker->username}]{$banker->username}[/url] is the top BON holder on {$this->site}!";
@@ -90,7 +90,7 @@ class NerdBot
         $snatched = cache()->remember(
             'nerdbot-snatched',
             $this->expiresAt,
-            fn () => Torrent::orderByDesc('times_completed')->first()
+            fn () => Torrent::query()->orderByDesc('times_completed')->first()
         );
 
         return "Currently [url=/torrents/{$snatched->id}]{$snatched->name}[/url] is the most snatched torrent on {$this->site}!";
@@ -101,7 +101,7 @@ class NerdBot
         $leeched = cache()->remember(
             'nerdbot-leeched',
             $this->expiresAt,
-            fn () => Torrent::orderByDesc('leechers')->first()
+            fn () => Torrent::query()->orderByDesc('leechers')->first()
         );
 
         return "Currently [url=/torrents/{$leeched->id}]{$leeched->name}[/url] is the most leeched torrent on {$this->site}!";
@@ -112,7 +112,7 @@ class NerdBot
         $seeded = cache()->remember(
             'nerdbot-seeded',
             $this->expiresAt,
-            fn () => Torrent::orderByDesc('seeders')->first()
+            fn () => Torrent::query()->orderByDesc('seeders')->first()
         );
 
         return "Currently [url=/torrents/{$seeded->id}]{$seeded->name}[/url] is the most seeded torrent on {$this->site}!";
@@ -123,7 +123,7 @@ class NerdBot
         $freeleech = cache()->remember(
             'nerdbot-freeleech',
             $this->expiresAt,
-            fn () => Torrent::where('free', '=', 1)->count()
+            fn () => Torrent::query()->where('free', '=', 1)->count()
         );
 
         return "There are currently {$freeleech} freeleech torrents on {$this->site}!";
@@ -134,7 +134,7 @@ class NerdBot
         $doubleUpload = cache()->remember(
             'nerdbot-doubleupload',
             $this->expiresAt,
-            fn () => Torrent::where('doubleup', '=', 1)->count()
+            fn () => Torrent::query()->where('doubleup', '=', 1)->count()
         );
 
         return "There are currently {$doubleUpload} double upload torrents on {$this->site}!";
@@ -145,7 +145,7 @@ class NerdBot
         $peers = cache()->remember(
             'nerdbot-peers',
             $this->expiresAt,
-            fn () => Peer::where('active', '=', 1)->count()
+            fn () => Peer::query()->where('active', '=', 1)->count()
         );
 
         return "Currently there are {$peers} peers on {$this->site}!";
@@ -156,8 +156,10 @@ class NerdBot
         $bans = cache()->remember(
             'nerdbot-bans',
             $this->expiresAt,
-            fn () => Ban::whereNotNull('ban_reason')
-                ->where('created_at', '>', $this->current->subDay())->count()
+            fn () => Ban::query()
+                ->whereNotNull('ban_reason')
+                ->where('created_at', '>', $this->current->subDay())
+                ->count()
         );
 
         return "In the last 24 hours, {$bans} users have been banned from {$this->site}";
@@ -168,8 +170,10 @@ class NerdBot
         $unbans = cache()->remember(
             'nerdbot-unbans',
             $this->expiresAt,
-            fn () => Ban::whereNotNull('unban_reason')
-                ->where('removed_at', '>', $this->current->subDay())->count()
+            fn () => Ban::query()
+                ->whereNotNull('unban_reason')
+                ->where('removed_at', '>', $this->current->subDay())
+                ->count()
         );
 
         return "In the last 24 hours, {$unbans} users have been unbanned from {$this->site}";
@@ -180,7 +184,7 @@ class NerdBot
         $warnings = cache()->remember(
             'nerdbot-warnings',
             $this->expiresAt,
-            fn () => Warning::where('created_at', '>', $this->current->subDay())->count()
+            fn () => Warning::query()->where('created_at', '>', $this->current->subDay())->count()
         );
 
         return "In the last 24 hours, {$warnings} hit and run warnings have been issued on {$this->site}!";
@@ -191,7 +195,7 @@ class NerdBot
         $uploads = cache()->remember(
             'nerdbot-uploads',
             $this->expiresAt,
-            fn () => Torrent::where('created_at', '>', $this->current->subDay())->count()
+            fn () => Torrent::query()->where('created_at', '>', $this->current->subDay())->count()
         );
 
         return "In the last 24 hours, {$uploads} torrents have been uploaded to {$this->site}!";
@@ -202,7 +206,7 @@ class NerdBot
         $logins = cache()->remember(
             'nerdbot-logins',
             $this->expiresAt,
-            fn () => User::whereNotNull('last_login')->where('last_login', '>', $this->current->subDay())->count()
+            fn () => User::query()->whereNotNull('last_login')->where('last_login', '>', $this->current->subDay())->count()
         );
 
         return "In The Last 24 Hours, {$logins} Unique Users Have Logged Into {$this->site}!";
@@ -213,7 +217,7 @@ class NerdBot
         $registrations = cache()->remember(
             'nerdbot-users',
             $this->expiresAt,
-            fn () => User::where('created_at', '>', $this->current->subDay())->count()
+            fn () => User::query()->where('created_at', '>', $this->current->subDay())->count()
         );
 
         return "In the last 24 hours, {$registrations} users have registered to {$this->site}!";

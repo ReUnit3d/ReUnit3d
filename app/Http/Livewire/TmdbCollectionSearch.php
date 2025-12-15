@@ -39,7 +39,8 @@ class TmdbCollectionSearch extends Component
      * @var \Illuminate\Pagination\LengthAwarePaginator<int, TmdbCollection>
      */
     final protected \Illuminate\Pagination\LengthAwarePaginator $collections {
-        get => TmdbCollection::withCount('movies')
+        get => TmdbCollection::query()
+            ->withCount('movies')
             ->with([
                 'movies' => fn ($query) => $query->withMin('torrents', 'category_id'),
             ])

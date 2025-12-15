@@ -239,7 +239,7 @@ class TmdbPersonCredit extends Component
     final public function render(): \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Contracts\Foundation\Application
     {
         return view('livewire.tmdb-person-credit', [
-            'user'                    => User::with(['group'])->findOrFail(auth()->user()->id),
+            'user'                    => User::query()->with(['group'])->findOrFail(auth()->user()->id),
             'personalFreeleech'       => $this->personalFreeleech,
             'medias'                  => $this->medias,
             'directedCount'           => $this->directedCount,
