@@ -247,7 +247,7 @@
             <span>{{ number_format(memory_get_peak_usage(true) / 1024 / 1024, 2) }} MiB</span>
             <strong>Load:</strong>
             <span>
-                {{ implode(' ', array_map(fn ($n) => number_format($n, 2), sys_getloadavg())) }}
+                {{ implode(' ', array_map(fn ($n) => number_format($n, 2), sys_getloadavg() ?: [])) ?: __('common.unknown') }}
             </span>
             <strong>Date:</strong>
             <span>{{ now() }}</span>
