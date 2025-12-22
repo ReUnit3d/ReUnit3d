@@ -457,6 +457,7 @@ class SimilarTorrent extends Component
             $torrent->subtitles()->delete();
             $torrent->resurrections()->delete();
             $torrent->featured()->delete();
+            $torrent->reseeds()->delete();
 
             $freeleechTokens = $torrent->freeleechTokens();
 
