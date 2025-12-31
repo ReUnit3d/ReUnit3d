@@ -244,7 +244,10 @@
                         </a>
                     </li>
                     <li>
-                        <a href="https://hdinnovations.github.io/HDInnovations/donate.html" target="_blank">
+                        <a
+                            href="https://hdinnovations.github.io/HDInnovations/donate.html"
+                            target="_blank"
+                        >
                             <i class="fas fa-handshake"></i>
                             Support UNIT3D
                         </a>
