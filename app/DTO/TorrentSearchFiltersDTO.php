@@ -550,6 +550,7 @@ readonly class TorrentSearchFiltersDTO
             $filters[] = [
                 'tmdb_movie.adult = '.($this->adult ? 'true' : 'false'),
                 'tmdb_tv.adult = '.($this->adult ? 'true' : 'false'),
+                'tmdb_movie_id IS NULL AND tmdb_tv_id IS NULL',
             ];
         }
 
