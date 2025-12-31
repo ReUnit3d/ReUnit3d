@@ -20,20 +20,31 @@
 1. [Introduction](#introduction)
 2. [Installation](#installation)
 3. [Updating](#updating)
-4. [Documentation](#docs)
-5. [Products, Services and Support](#hdinnovations)
-6. [Contributing](#contributing)
-7. [Translations](#translations)
-8. [License](#license)
+4. [Demo](#demo)
+5. [Documentation](#docs)
+6. [Products, Services and Support](#hdinnovations)
+7. [Contributing](#contributing)
+8. [Translations](#translations)
+9. [License](#license)
 
 
 ## <a name="introduction"></a> 🧐 Introduction
 
-UNIT3D (pronounced "united") is a modern Private Torrent Tracker software built with Laravel, Livewire and AlpineJS. It offers a feature-rich platform with excellent performance, security and scalability to create and manage a private tracker. It is MySQL Strict Mode Compliant and PHP 8.4 Ready. It uses an MVC Architecture to ensure clarity between logic and presentation.
+UNIT3D (pronounced "united") is a modern FOSS Private Torrent Tracker software built with Laravel, Livewire and AlpineJS. It offers a feature-rich platform with excellent performance, security and scalability to create and manage a private tracker. It is MySQL Strict Mode Compliant and PHP 8.4 Ready. It uses an MVC Architecture to ensure clarity between logic and presentation.
 
 ## <a name="installation"></a> 🖥️ Installation
 
-The official script is no longer available at this time. A new one will be provided soon.
+### Production
+
+Full rust based UNIT3D installer to be used on a clean dedicated server or VPS running Ubuntu 22.04/24.04 LTS. Provides a clean, full production ready install of UNIT3D. Unlimited installs for a single domain!
+
+https://polar.sh/checkout/polar_c_pauMRqJKIWXy1SS2U0lQzX4JKX75xFbvv5llw4M3uXL
+
+### Development
+
+Guides for MacOS and Arch Linux can be found here. Windows guide is being worked on.
+
+https://hdinnovations.github.io/UNIT3D
 
 ## <a name="updating"></a> 🖥️ Updating
 
@@ -41,13 +52,21 @@ To update your installation to the latest version, run the following command. Th
 
 `sudo php artisan git:update`
 
+## <a name="demo"></a> 🖥️ Demo
+
+Domain: https://unit3d.dev
+
+Username: `UNIT3D`
+
+Password: `5KNC9THFbFyyG0XEdN2v0y4U`
+
 ## <a name="docs"></a> 📚 Documentation
 
 https://hdinnovations.github.io/UNIT3D
 
 ## <a name="hdinnovations"></a> 🛠️ Products, Services and Support
 
-HDInnovations offers a variety of services to help you with your UNIT3D instance. We offer services such as installation, updating, server tuning, dependency tuning, themes, porting from different codebase and more. We have a Discord server for support and general discussion. This is a private server, and you will need to be invited to join. There is a small fee to join the server to help support the development of UNIT3D.
+HDInnovations offers a variety of services to help you with your UNIT3D instance. We offer services such as installation, updating, server tuning, dependency tuning, themes, porting from different codebase and more. We have a Discord server for support and general discussion. This is a private server, and you will need to be invited to join. There is a small fee to join the server to help support the development of UNIT3D. UNIT3D itself is FOSS!
 
 https://hdinnovations.github.io/HDInnovations
 
