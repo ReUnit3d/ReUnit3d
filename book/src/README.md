@@ -2,11 +2,11 @@ Welcome to the official documentation for **UNIT3D** - a modern, feature-rich pr
 
 ### About UNIT3D
 
-UNIT3D (pronounced "united") is a powerful, open-source private torrent tracker solution that provides a comprehensive platform for managing and sharing content within your community. Built from the ground up with modern web technologies, UNIT3D combines excellent performance, security, and scalability with a feature-rich interface that rivals otther private tracker softwares around the world. UNIT3D is a complete BitTorrent tracker management system designed for private communities. It handles everything from user management, torrent uploads and downloads, peer tracking, to community features like forums, achievements, real-time chat and much more. The codebase follows the MVC (Model-View-Controller) architectural pattern to ensure clarity between business logic and presentation, making it maintainable and extensible.
+UNIT3D (pronounced "united") is a powerful, open-source private torrent tracker solution that provides a comprehensive platform for managing and sharing content within your community. Built from the ground up with modern web technologies, UNIT3D combines excellent performance, security, and scalability with a feature-rich interface that rivals other private tracker softwares around the world. UNIT3D is a complete BitTorrent tracker management system designed for private communities. It handles everything from user management, torrent uploads and downloads, peer tracking, to community features like forums, achievements, real-time chat and much more. The codebase follows the MVC (Model-View-Controller) architectural pattern to ensure clarity between business logic and presentation, making it maintainable and extensible.
 
 ### Technology Stack
 
-UNIT3D is built on a modern, cutting-edge technology stack:
+UNIT3D is built on a modern technology stack:
 
 #### Backend
 - **PHP 8.4+** - Latest PHP version with performance enhancements and type safety
