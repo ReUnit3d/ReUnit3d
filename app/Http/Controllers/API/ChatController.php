@@ -35,7 +35,6 @@ use App\Models\UserAudible;
 use App\Models\UserEcho;
 use App\Repositories\ChatRepository;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
 
 /**
  * @see \Tests\Feature\Http\Controllers\API\ChatControllerTest
@@ -130,40 +129,34 @@ class ChatController extends Controller
         $user = $request->user();
 
         // Create echo for user if missing
-        $echoes = cache()->remember(
-            'user-echoes'.$user->id,
-            3600,
-            fn () => UserEcho::with(['user', 'room', 'target', 'bot'])->where('user_id', '=', $user->id)->get()
-        );
+        $affected = UserEcho::query()->upsert([[
+            'user_id' => $user->id,
+            'bot_id'  => $bot->id,
+        ]], ['user_id', 'bot_id']);
 
-        if ($echoes->doesntContain(fn ($echo) => $echo->bot_id == $bot->id)) {
-            $echoes->push(UserEcho::create([
-                'user_id' => $user->id,
-                'bot_id'  => $bot->id,
-            ]));
-
-            cache()->put('user-echoes'.$user->id, $echoes, 3600);
-
-            Chatter::dispatch('echo', $user->id, UserEchoResource::collection($echoes));
+        if ($affected === 1) {
+            Chatter::dispatch('echo', $user->id, UserEchoResource::collection(
+                UserEcho::query()
+                    ->with(['user', 'room', 'target', 'bot'])
+                    ->where('user_id', '=', $user->id)
+                    ->get()
+            ));
         }
 
         // Create audible for user if missing
-        $audibles = cache()->remember(
-            'user-audibles'.$user->id,
-            3600,
-            fn () => UserAudible::with(['user', 'room', 'target', 'bot'])->where('user_id', '=', $user->id)->get()
-        );
+        $affected = UserAudible::query()->upsert([[
+            'user_id' => $user->id,
+            'bot_id'  => $bot->id,
+            'status'  => false,
+        ]], ['user_id', 'bot_id']);
 
-        if ($audibles->doesntContain(fn ($audible) => $audible->bot_id == $bot->id)) {
-            $audibles->push(UserAudible::create([
-                'user_id' => $user->id,
-                'bot_id'  => $bot->id,
-                'status'  => false,
-            ]));
-
-            cache()->put('user-audibles'.$user->id, $audibles, 3600);
-
-            Chatter::dispatch('audible', $user->id, UserAudibleResource::collection($audibles));
+        if ($affected === 1) {
+            Chatter::dispatch('audible', $user->id, UserAudibleResource::collection(
+                UserAudible::query()
+                    ->with(['user', 'room', 'target', 'bot'])
+                    ->where('user_id', '=', $user->id)
+                    ->get()
+            ));
         }
 
         return ChatMessageResource::collection($this->chatRepository->botMessages($request->user()->id, $bot->id));
@@ -222,42 +215,36 @@ class ChatController extends Controller
         if ($receiverId && $receiverId > 0) {
             // Create echo for both users if missing
             foreach ([[$userId, $receiverId], [$receiverId, $userId]] as [$user1Id, $user2Id]) {
-                $echoes = cache()->remember(
-                    'user-echoes'.$user1Id,
-                    3600,
-                    fn () => UserEcho::with(['user', 'room', 'target', 'bot'])->where('user_id', '=', $user1Id)->get()
-                );
+                $affected = UserEcho::query()->upsert([[
+                    'user_id'   => $user1Id,
+                    'target_id' => $user2Id,
+                ]], ['user_id', 'target_id']);
 
-                if ($echoes->doesntContain(fn ($echo) => $echo->target_id == $user2Id)) {
-                    $echoes->push(UserEcho::create([
-                        'user_id'   => $user1Id,
-                        'target_id' => $user2Id,
-                    ]));
-
-                    cache()->put('user-echoes'.$user1Id, $echoes, 3600);
-
-                    Chatter::dispatch('echo', $user1Id, UserEchoResource::collection($echoes));
+                if ($affected === 1) {
+                    Chatter::dispatch('echo', $user->id, UserEchoResource::collection(
+                        UserEcho::query()
+                            ->with(['user', 'room', 'target', 'bot'])
+                            ->where('user_id', '=', $user->id)
+                            ->get()
+                    ));
                 }
             }
 
             // Create audible for both users if missing
             foreach ([[$userId, $receiverId], [$receiverId, $userId]] as [$user1Id, $user2Id]) {
-                $audibles = cache()->remember(
-                    'user-audibles'.$user1Id,
-                    3600,
-                    fn () => UserAudible::with(['user', 'room', 'target', 'bot'])->where('user_id', '=', $user1Id)->get()
-                );
+                $affected = UserAudible::query()->upsert([[
+                    'user_id'   => $user1Id,
+                    'target_id' => $user2Id,
+                    'status'    => true,
+                ]], ['user_id', 'target_id']);
 
-                if ($audibles->doesntContain(fn ($audible) => $audible->target_id == $user2Id)) {
-                    $audibles->push(UserAudible::create([
-                        'user_id'   => $user1Id,
-                        'target_id' => $user2Id,
-                        'status'    => true,
-                    ]));
-
-                    cache()->put('user-audibles'.$user1Id, $audibles, 3600);
-
-                    Chatter::dispatch('audible', $user1Id, UserAudibleResource::collection($audibles));
+                if ($affected === 1) {
+                    Chatter::dispatch('audible', $user->id, UserAudibleResource::collection(
+                        UserAudible::query()
+                            ->with(['user', 'room', 'target', 'bot'])
+                            ->where('user_id', '=', $user->id)
+                            ->get()
+                    ));
                 }
             }
 
@@ -307,8 +294,6 @@ class ChatController extends Controller
 
         $senderEchoes = UserEcho::with(['room', 'target', 'bot'])->where('user_id', $user->id)->get();
 
-        $expiresAt = Carbon::now()->addMinutes(60);
-        cache()->put('user-echoes'.$user->id, $senderEchoes, $expiresAt);
         event(new Chatter('echo', $user->id, UserEchoResource::collection($senderEchoes)));
 
         /**
@@ -326,8 +311,6 @@ class ChatController extends Controller
         $user->load(['chatStatus', 'chatroom', 'group', 'echoes']);
         $senderEchoes = UserEcho::with(['room', 'target', 'bot'])->where('user_id', $user->id)->get();
 
-        $expiresAt = Carbon::now()->addMinutes(60);
-        cache()->put('user-echoes'.$user->id, $senderEchoes, $expiresAt);
         event(new Chatter('echo', $user->id, UserEchoResource::collection($senderEchoes)));
 
         /**
@@ -345,8 +328,6 @@ class ChatController extends Controller
         $user->load(['chatStatus', 'chatroom', 'group', 'echoes']);
         $senderEchoes = UserEcho::with(['room', 'target', 'bot'])->where('user_id', $user->id)->get();
 
-        $expiresAt = Carbon::now()->addMinutes(60);
-        cache()->put('user-echoes'.$user->id, $senderEchoes, $expiresAt);
         event(new Chatter('echo', $user->id, UserEchoResource::collection($senderEchoes)));
 
         return response()->json($user);
@@ -362,8 +343,6 @@ class ChatController extends Controller
         $user->load(['chatStatus', 'chatroom', 'group', 'audibles', 'audibles']);
         $senderAudibles = UserAudible::with(['room', 'target', 'bot'])->where('user_id', $user->id)->get();
 
-        $expiresAt = Carbon::now()->addMinutes(60);
-        cache()->put('user-audibles'.$user->id, $senderAudibles, $expiresAt);
         event(new Chatter('audible', $user->id, UserAudibleResource::collection($senderAudibles)));
 
         return response()->json($user);
@@ -379,8 +358,6 @@ class ChatController extends Controller
         $user->load(['chatStatus', 'chatroom', 'group', 'audibles', 'audibles']);
         $senderAudibles = UserAudible::with(['target', 'room', 'bot'])->where('user_id', $user->id)->get();
 
-        $expiresAt = Carbon::now()->addMinutes(60);
-        cache()->put('user-audibles'.$user->id, $senderAudibles, $expiresAt);
         event(new Chatter('audible', $user->id, UserAudibleResource::collection($senderAudibles)));
 
         return response()->json($user);
@@ -396,8 +373,6 @@ class ChatController extends Controller
         $user->load(['chatStatus', 'chatroom', 'group', 'audibles', 'audibles'])->findOrFail($user->id);
         $senderAudibles = UserAudible::with(['bot', 'room', 'bot'])->where('user_id', $user->id)->get();
 
-        $expiresAt = Carbon::now()->addMinutes(60);
-        cache()->put('user-audibles'.$user->id, $senderAudibles, $expiresAt);
         event(new Chatter('audible', $user->id, UserAudibleResource::collection($senderAudibles)));
 
         return response()->json($user);
@@ -429,21 +404,18 @@ class ChatController extends Controller
         $user->save();
 
         // Create echo for user if missing
-        $echoes = cache()->remember(
-            'user-echoes'.$user->id,
-            3600,
-            fn () => UserEcho::with(['user', 'room', 'target', 'bot'])->where('user_id', '=', $user->id)->get(),
-        );
+        $affected = UserEcho::query()->upsert([[
+            'user_id' => $user->id,
+            'room_id' => $room->id,
+        ]], ['user_id', 'room_id']);
 
-        if ($echoes->doesntContain(fn ($echo) => $echo->room_id == $room->id)) {
-            $echoes->push(UserEcho::create([
-                'user_id' => $user->id,
-                'room_id' => $room->id,
-            ]));
-
-            cache()->put('user-echoes'.$user->id, $echoes, 3600);
-
-            Chatter::dispatch('echo', $user->id, UserEchoResource::collection($echoes));
+        if ($affected === 1) {
+            Chatter::dispatch('echo', $user->id, UserEchoResource::collection(
+                UserEcho::query()
+                    ->with(['user', 'room', 'target', 'bot'])
+                    ->where('user_id', '=', $user->id)
+                    ->get()
+            ));
         }
 
         return response()->json($user);
