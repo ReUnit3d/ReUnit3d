@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
-| API Routes For Vue Components
+| API Routes For Chat Components
 |--------------------------------------------------------------------------
 */
 

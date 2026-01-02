@@ -100,7 +100,7 @@ UNIT3D/
 │   ├── api.php                   # API routes
 │   ├── announce.php              # Torrent announce routes
 │   ├── rss.php                   # RSS feed routes
-│   ├── vue.php                   # Chat component routes
+│   ├── chat.php                  # Chat component routes
 │   └── channels.php              # WebSocket channels
 │
 ├── storage/                      # Generated files and logs
