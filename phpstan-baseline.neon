@@ -1,6 +1,12 @@
 parameters:
 	ignoreErrors:
 		-
+			message: '#^Call to function is_int\(\) with string\|null will always evaluate to false\.$#'
+			identifier: function.impossibleType
+			count: 1
+			path: app/Actions/Fortify/CreateNewUser.php
+
+		-
 			message: '#^Instanceof between App\\Models\\User and Illuminate\\Contracts\\Auth\\MustVerifyEmail will always evaluate to true\.$#'
 			identifier: instanceof.alwaysTrue
 			count: 1
@@ -623,6 +629,12 @@ parameters:
 			identifier: foreach.nonIterable
 			count: 1
 			path: database/migrations/2022_12_30_090351_update_user_privacy_table.php
+
+		-
+			message: '#^Call to function is_int\(\) with string\|null will always evaluate to false\.$#'
+			identifier: function.impossibleType
+			count: 3
+			path: database/seeders/UserSeeder.php
 
 		-
 			message: '#^Variable \$level might not be defined\.$#'

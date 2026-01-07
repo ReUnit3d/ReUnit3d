@@ -16,6 +16,8 @@ declare(strict_types=1);
 
 namespace App\Actions\Fortify;
 
+use App\Models\Chatroom;
+use App\Models\ChatStatus;
 use App\Models\Group;
 use App\Models\Invite;
 use App\Models\User;
@@ -69,14 +71,22 @@ class CreateNewUser implements CreatesNewUsers
         ])->validate();
 
         $user = User::query()->create([
-            'username'   => $input['username'],
-            'email'      => $input['email'],
-            'password'   => Hash::make($input['password']),
-            'passkey'    => md5(random_bytes(60)),
-            'rsskey'     => md5(random_bytes(60)),
-            'uploaded'   => config('other.default_upload'),
-            'downloaded' => config('other.default_download'),
-            'group_id'   => Group::query()->where('slug', '=', 'validating')->soleValue('id'),
+            'username'    => $input['username'],
+            'email'       => $input['email'],
+            'password'    => Hash::make($input['password']),
+            'passkey'     => md5(random_bytes(60)),
+            'rsskey'      => md5(random_bytes(60)),
+            'uploaded'    => config('other.default_upload'),
+            'downloaded'  => config('other.default_download'),
+            'group_id'    => Group::query()->where('slug', '=', 'validating')->soleValue('id'),
+            'chatroom_id' => Chatroom::query()
+                ->when(
+                    \is_int(config('chat.system_chatroom')),
+                    fn ($query) => $query->where('id', '=', config('chat.system_chatroom')),
+                    fn ($query) => $query->where('name', '=', config('chat.system_chatroom')),
+                )
+                ->soleValue('id'),
+            'chat_status_id' => ChatStatus::query()->value('id'),
         ]);
 
         $user->passkeys()->create(['content' => $user->passkey]);
