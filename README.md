@@ -37,9 +37,11 @@ UNIT3D (pronounced "united") is a modern FOSS Private Torrent Tracker software b
 
 ### Production
 
-Full rust based UNIT3D installer to be used on a clean dedicated server or VPS running Ubuntu 22.04/24.04 LTS. Provides a clean, full production ready install of UNIT3D. Unlimited installs for a single domain!
+For production deployments, we offer a streamlined Rust-based automated installer for Ubuntu 22.04/24.04 LTS. This tool handles the complete setup process, start to finish, providing a production-ready UNIT3D instance. Upon purchase you will receive a zip file containing a guide and binary installer file. Polar will provide you with a license key for the installer. 
 
-https://polar.sh/checkout/polar_c_pauMRqJKIWXy1SS2U0lQzX4JKX75xFbvv5llw4M3uXL
+Available for purchase here: https://buy.polar.sh/polar_cl_8sOwJuTWkAue5HA80Ns5B4INEuZ2Ia9GvgRxu1m9gXZ
+
+Alternatively, manual installation instructions for a local development environment are available below. There is no official FOSS production installer. You are free to use ones out there but we will not provide support.
 
 ### Development
 
@@ -67,7 +69,7 @@ https://hdinnovations.github.io/UNIT3D
 
 ## <a name="hdinnovations"></a> 🛠️ Products, Services and Support
 
-HDInnovations offers a variety of services to help you with your UNIT3D instance. We offer services such as installation, updating, server tuning, dependency tuning, themes, porting from different codebase and more. We have a Discord server for support and general discussion. This is a private server, and you will need to be invited to join. There is a small fee to join the server to help support the development of UNIT3D. UNIT3D itself is FOSS!
+HDInnovations offers a variety of services to help you with your UNIT3D instance. We offer services such as installation, updating, server tuning, dependency tuning, themes, porting from a different codebase and more. We have a Discord server for support and general discussion. This is a private server, and you will need to be invited to join. There is a small fee to join the server to help support the development of UNIT3D. UNIT3D itself is FOSS!
 
 https://hdinnovations.github.io/HDInnovations
 
