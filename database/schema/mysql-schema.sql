@@ -80,7 +80,7 @@ DROP TABLE IF EXISTS `application_image_proofs`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `application_image_proofs` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `application_id` int NOT NULL,
+  `application_id` int unsigned NOT NULL,
   `image` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,

@@ -25,6 +25,10 @@ return new class () extends Migration {
      */
     public function up(): void
     {
+        Schema::table('application_image_proofs', function (Blueprint $table): void {
+            $table->unsignedInteger('application_id')->change();
+        });
+
         Schema::table('application_url_proofs', function (Blueprint $table): void {
             $table->unsignedInteger('application_id')->change();
         });
