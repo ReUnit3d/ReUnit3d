@@ -8,7 +8,7 @@ DROP TABLE IF EXISTS `achievement_details`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `achievement_details` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `description` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `points` int unsigned NOT NULL DEFAULT '1',
@@ -24,7 +24,7 @@ DROP TABLE IF EXISTS `achievement_progress`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `achievement_progress` (
   `id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `achievement_id` bigint unsigned NOT NULL,
+  `achievement_id` int unsigned NOT NULL,
   `achiever_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `achiever_id` int unsigned NOT NULL,
   `points` int unsigned NOT NULL DEFAULT '0',
@@ -33,8 +33,8 @@ CREATE TABLE `achievement_progress` (
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `achievement_progress_achiever_type_achiever_id_index` (`achiever_type`,`achiever_id`),
-  KEY `achievement_progress_achievement_id_foreign` (`achievement_id`),
   KEY `achievement_progress_achiever_id_foreign` (`achiever_id`),
+  KEY `achievement_progress_achievement_id_foreign` (`achievement_id`),
   CONSTRAINT `achievement_progress_achievement_id_foreign` FOREIGN KEY (`achievement_id`) REFERENCES `achievement_details` (`id`),
   CONSTRAINT `achievement_progress_achiever_id_foreign` FOREIGN KEY (`achiever_id`) REFERENCES `users` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -167,7 +167,7 @@ CREATE TABLE `automatic_torrent_freeleeches` (
   `size` bigint unsigned DEFAULT NULL,
   `category_id` int DEFAULT NULL,
   `type_id` int DEFAULT NULL,
-  `resolution_id` bigint unsigned DEFAULT NULL,
+  `resolution_id` int unsigned DEFAULT NULL,
   `freeleech_percentage` int NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -197,7 +197,7 @@ DROP TABLE IF EXISTS `blacklist_clients`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `blacklist_clients` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `reason` longtext COLLATE utf8mb4_unicode_ci,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -376,20 +376,20 @@ DROP TABLE IF EXISTS `comments`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `comments` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `content` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `anon` tinyint(1) NOT NULL DEFAULT '0',
   `user_id` int unsigned DEFAULT NULL,
-  `parent_id` bigint unsigned DEFAULT NULL,
+  `parent_id` int unsigned DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `commentable_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `commentable_id` bigint unsigned NOT NULL,
   PRIMARY KEY (`id`),
   KEY `comments_commentable_type_commentable_id_index` (`commentable_type`,`commentable_id`),
-  KEY `comments_parent_id_foreign` (`parent_id`),
   KEY `comments_user_id_foreign` (`user_id`),
   KEY `comments_created_at_index` (`created_at`),
+  KEY `comments_parent_id_foreign` (`parent_id`),
   CONSTRAINT `comments_parent_id_foreign` FOREIGN KEY (`parent_id`) REFERENCES `comments` (`id`) ON DELETE CASCADE,
   CONSTRAINT `comments_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -411,7 +411,7 @@ DROP TABLE IF EXISTS `distributors`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `distributors` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id`),
   KEY `distributors_name_index` (`name`)
@@ -441,9 +441,9 @@ CREATE TABLE `donation_packages` (
   `description` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `cost` decimal(6,2) NOT NULL,
   `upload_value` bigint unsigned DEFAULT NULL,
-  `invite_value` bigint unsigned DEFAULT NULL,
+  `invite_value` int unsigned DEFAULT NULL,
   `bonus_value` bigint unsigned DEFAULT NULL,
-  `donor_value` bigint unsigned DEFAULT NULL,
+  `donor_value` int unsigned DEFAULT NULL,
   `is_active` tinyint(1) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -760,7 +760,7 @@ CREATE TABLE `groups` (
   `min_ratio` decimal(4,2) DEFAULT NULL,
   `min_age` bigint unsigned DEFAULT NULL,
   `system_required` tinyint(1) NOT NULL DEFAULT '0',
-  `min_uploads` bigint unsigned DEFAULT NULL,
+  `min_uploads` int unsigned DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `groups_slug_unique` (`slug`),
   KEY `groups_download_slots_index` (`download_slots`),
@@ -1007,7 +1007,7 @@ DROP TABLE IF EXISTS `media_languages`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `media_languages` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `code` char(2) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -1212,16 +1212,16 @@ DROP TABLE IF EXISTS `playlist_suggestions`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `playlist_suggestions` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `playlist_id` bigint unsigned NOT NULL,
+  `playlist_id` int unsigned NOT NULL,
   `torrent_id` int unsigned NOT NULL,
   `user_id` int unsigned NOT NULL,
   `message` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `playlist_suggestions_playlist_id_foreign` (`playlist_id`),
   KEY `playlist_suggestions_torrent_id_foreign` (`torrent_id`),
   KEY `playlist_suggestions_user_id_foreign` (`user_id`),
+  KEY `playlist_suggestions_playlist_id_foreign` (`playlist_id`),
   CONSTRAINT `playlist_suggestions_playlist_id_foreign` FOREIGN KEY (`playlist_id`) REFERENCES `playlists` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `playlist_suggestions_torrent_id_foreign` FOREIGN KEY (`torrent_id`) REFERENCES `torrents` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `playlist_suggestions_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON UPDATE CASCADE
@@ -1250,7 +1250,7 @@ DROP TABLE IF EXISTS `playlists`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `playlists` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `playlist_category_id` int unsigned NOT NULL,
   `user_id` int unsigned NOT NULL,
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -1347,7 +1347,7 @@ DROP TABLE IF EXISTS `regions`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `regions` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `position` int NOT NULL,
   PRIMARY KEY (`id`)
@@ -1592,7 +1592,7 @@ DROP TABLE IF EXISTS `subtitles`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `subtitles` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `file_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `file_size` bigint unsigned NOT NULL,
@@ -1640,7 +1640,7 @@ DROP TABLE IF EXISTS `ticket_attachments`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `ticket_attachments` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int unsigned NOT NULL,
   `ticket_id` int NOT NULL,
   `file_name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -1659,7 +1659,7 @@ DROP TABLE IF EXISTS `ticket_categories`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `ticket_categories` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `id` smallint unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `position` int NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -1686,7 +1686,7 @@ DROP TABLE IF EXISTS `ticket_priorities`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `ticket_priorities` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `id` smallint unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `position` int NOT NULL,
   `color` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -1700,7 +1700,7 @@ DROP TABLE IF EXISTS `tickets`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `tickets` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int unsigned NOT NULL,
   `category_id` int NOT NULL,
   `priority_id` int NOT NULL,
@@ -2605,7 +2605,7 @@ DROP TABLE IF EXISTS `watchlists`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `watchlists` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int unsigned NOT NULL,
   `staff_id` int unsigned NOT NULL,
   `message` text COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -3048,3 +3048,4 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (365,'2025_09_25_11
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (366,'2025_11_08_094209_rename_warnings_torrent_to_torrent_id',1);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (367,'2025_11_18_080804_echoes_audibles_unique_keys',1);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (368,'2025_11_29_101934_update_events_rename_to_giveaways',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (369,'2026_01_06_231535_remove_unnecessary_bigints',1);
