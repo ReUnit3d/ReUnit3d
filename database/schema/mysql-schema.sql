@@ -93,7 +93,7 @@ DROP TABLE IF EXISTS `application_url_proofs`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `application_url_proofs` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `application_id` int NOT NULL,
+  `application_id` int unsigned NOT NULL,
   `url` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -165,10 +165,10 @@ CREATE TABLE `automatic_torrent_freeleeches` (
   `position` int unsigned NOT NULL,
   `name_regex` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `size` bigint unsigned DEFAULT NULL,
-  `category_id` int DEFAULT NULL,
-  `type_id` int DEFAULT NULL,
+  `category_id` int unsigned DEFAULT NULL,
+  `type_id` int unsigned DEFAULT NULL,
   `resolution_id` int unsigned DEFAULT NULL,
-  `freeleech_percentage` int NOT NULL,
+  `freeleech_percentage` int unsigned NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
@@ -272,7 +272,7 @@ DROP TABLE IF EXISTS `bon_transactions`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `bon_transactions` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `bon_exchange_id` int unsigned NOT NULL DEFAULT '0',
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `cost` decimal(22,2) NOT NULL DEFAULT '0.00',
@@ -307,7 +307,7 @@ DROP TABLE IF EXISTS `bots`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `bots` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `position` int NOT NULL,
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `command` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -578,9 +578,9 @@ DROP TABLE IF EXISTS `forum_permissions`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `forum_permissions` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `forum_id` smallint unsigned NOT NULL,
-  `group_id` int NOT NULL,
+  `group_id` int unsigned NOT NULL,
   `read_topic` tinyint(1) NOT NULL,
   `reply_topic` tinyint(1) NOT NULL,
   `start_topic` tinyint(1) NOT NULL,
@@ -598,10 +598,10 @@ DROP TABLE IF EXISTS `forums`;
 CREATE TABLE `forums` (
   `id` smallint unsigned NOT NULL AUTO_INCREMENT,
   `position` int DEFAULT NULL,
-  `num_topic` int DEFAULT NULL,
-  `num_post` int DEFAULT NULL,
+  `num_topic` int unsigned DEFAULT NULL,
+  `num_post` int unsigned DEFAULT NULL,
   `last_topic_id` int unsigned DEFAULT NULL,
-  `last_post_id` int DEFAULT NULL,
+  `last_post_id` int unsigned DEFAULT NULL,
   `last_post_user_id` int unsigned DEFAULT NULL,
   `last_post_created_at` timestamp NULL DEFAULT NULL,
   `name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -614,9 +614,9 @@ CREATE TABLE `forums` (
   PRIMARY KEY (`id`),
   KEY `forums_last_post_user_id_foreign` (`last_post_user_id`),
   KEY `forums_last_topic_id_foreign` (`last_topic_id`),
-  KEY `forums_last_post_id_foreign` (`last_post_id`),
   KEY `forums_last_post_created_at_index` (`last_post_created_at`),
   KEY `forums_forum_category_id_foreign` (`forum_category_id`),
+  KEY `forums_last_post_id_foreign` (`last_post_id`),
   CONSTRAINT `forums_forum_category_id_foreign` FOREIGN KEY (`forum_category_id`) REFERENCES `forum_categories` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `forums_last_post_id_foreign` FOREIGN KEY (`last_post_id`) REFERENCES `posts` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT `forums_last_post_user_id_foreign` FOREIGN KEY (`last_post_user_id`) REFERENCES `users` (`id`) ON UPDATE CASCADE,
@@ -725,12 +725,12 @@ DROP TABLE IF EXISTS `groups`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `groups` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `slug` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `position` int NOT NULL,
   `level` int NOT NULL DEFAULT '0',
-  `download_slots` int DEFAULT NULL,
+  `download_slots` int unsigned DEFAULT NULL,
   `description` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `color` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `icon` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -993,7 +993,7 @@ DROP TABLE IF EXISTS `likes`;
 CREATE TABLE `likes` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int unsigned NOT NULL,
-  `post_id` int NOT NULL,
+  `post_id` int unsigned NOT NULL,
   `like` tinyint(1) DEFAULT NULL,
   `dislike` tinyint(1) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -1079,7 +1079,7 @@ CREATE TABLE `options` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `poll_id` int unsigned NOT NULL,
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `votes` int NOT NULL DEFAULT '0',
+  `votes` int unsigned NOT NULL DEFAULT '0',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -1091,7 +1091,7 @@ DROP TABLE IF EXISTS `pages`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `pages` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `content` text COLLATE utf8mb4_unicode_ci,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -1233,7 +1233,7 @@ DROP TABLE IF EXISTS `playlist_torrents`;
 CREATE TABLE `playlist_torrents` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `position` int DEFAULT NULL,
-  `playlist_id` int NOT NULL DEFAULT '0',
+  `playlist_id` int unsigned NOT NULL DEFAULT '0',
   `torrent_id` int unsigned NOT NULL DEFAULT '0',
   `tmdb_id` int NOT NULL DEFAULT '0',
   `created_at` timestamp NULL DEFAULT NULL,
@@ -1295,7 +1295,7 @@ CREATE TABLE `post_tips` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `sender_id` int unsigned DEFAULT NULL,
   `recipient_id` int unsigned DEFAULT NULL,
-  `post_id` int DEFAULT NULL,
+  `post_id` int unsigned DEFAULT NULL,
   `bon` decimal(22,2) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
@@ -1311,7 +1311,7 @@ DROP TABLE IF EXISTS `posts`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `posts` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `content` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `anon` tinyint(1) NOT NULL DEFAULT '0',
   `created_at` timestamp NULL DEFAULT NULL,
@@ -1388,10 +1388,10 @@ DROP TABLE IF EXISTS `request_bounty`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `request_bounty` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int unsigned NOT NULL,
   `seedbonus` decimal(12,2) NOT NULL DEFAULT '0.00',
-  `requests_id` int NOT NULL,
+  `requests_id` int unsigned NOT NULL,
   `anon` tinyint(1) NOT NULL DEFAULT '0',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -1407,7 +1407,7 @@ DROP TABLE IF EXISTS `request_claims`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `request_claims` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `request_id` int NOT NULL,
+  `request_id` int unsigned NOT NULL,
   `user_id` int unsigned NOT NULL,
   `anon` tinyint(1) NOT NULL DEFAULT '0',
   `created_at` timestamp NULL DEFAULT NULL,
@@ -1422,7 +1422,7 @@ DROP TABLE IF EXISTS `requests`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `requests` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `category_id` smallint unsigned NOT NULL,
   `imdb` int unsigned DEFAULT NULL,
@@ -1505,7 +1505,7 @@ DROP TABLE IF EXISTS `rss`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `rss` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `position` int NOT NULL DEFAULT '0',
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Default',
   `user_id` int unsigned NOT NULL DEFAULT '1',
@@ -1596,10 +1596,10 @@ CREATE TABLE `subtitles` (
   `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `file_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `file_size` bigint unsigned NOT NULL,
-  `language_id` int NOT NULL,
+  `language_id` int unsigned NOT NULL,
   `extension` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `note` text COLLATE utf8mb4_unicode_ci,
-  `downloads` int DEFAULT NULL,
+  `downloads` int unsigned DEFAULT NULL,
   `verified` tinyint(1) NOT NULL DEFAULT '0',
   `user_id` int unsigned NOT NULL,
   `torrent_id` int unsigned NOT NULL,
@@ -1642,7 +1642,7 @@ DROP TABLE IF EXISTS `ticket_attachments`;
 CREATE TABLE `ticket_attachments` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int unsigned NOT NULL,
-  `ticket_id` int NOT NULL,
+  `ticket_id` int unsigned NOT NULL,
   `file_name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `file_size` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `file_extension` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -1702,8 +1702,8 @@ DROP TABLE IF EXISTS `tickets`;
 CREATE TABLE `tickets` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int unsigned NOT NULL,
-  `category_id` int NOT NULL,
-  `priority_id` int NOT NULL,
+  `category_id` smallint unsigned NOT NULL,
+  `priority_id` smallint unsigned NOT NULL,
   `staff_id` int unsigned DEFAULT NULL,
   `user_read` tinyint(1) NOT NULL DEFAULT '0',
   `staff_read` tinyint(1) NOT NULL DEFAULT '0',
@@ -1871,7 +1871,7 @@ CREATE TABLE `tmdb_movies` (
   `status` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `tagline` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `vote_average` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `vote_count` int DEFAULT NULL,
+  `vote_count` int unsigned DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `trailer` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -1966,10 +1966,10 @@ CREATE TABLE `tmdb_tv` (
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `name_sort` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `overview` mediumtext COLLATE utf8mb4_unicode_ci,
-  `number_of_episodes` int DEFAULT NULL,
-  `count_existing_episodes` int DEFAULT NULL,
-  `count_total_episodes` int DEFAULT NULL,
-  `number_of_seasons` int DEFAULT NULL,
+  `number_of_episodes` int unsigned DEFAULT NULL,
+  `count_existing_episodes` int unsigned DEFAULT NULL,
+  `count_total_episodes` int unsigned DEFAULT NULL,
+  `number_of_seasons` int unsigned DEFAULT NULL,
   `episode_run_time` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `first_air_date` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `status` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -1984,7 +1984,7 @@ CREATE TABLE `tmdb_tv` (
   `backdrop` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `poster` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `vote_average` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `vote_count` int DEFAULT NULL,
+  `vote_count` int unsigned DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `trailer` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -1999,10 +1999,10 @@ DROP TABLE IF EXISTS `topic_reads`;
 CREATE TABLE `topic_reads` (
   `user_id` int unsigned NOT NULL,
   `topic_id` int unsigned NOT NULL,
-  `last_read_post_id` int NOT NULL,
+  `last_read_post_id` int unsigned NOT NULL,
   PRIMARY KEY (`user_id`,`topic_id`),
-  KEY `topic_reads_last_read_post_id_foreign` (`last_read_post_id`),
   KEY `topic_reads_topic_id_index` (`topic_id`),
+  KEY `topic_reads_last_read_post_id_foreign` (`last_read_post_id`),
   CONSTRAINT `topic_reads_last_read_post_id_foreign` FOREIGN KEY (`last_read_post_id`) REFERENCES `posts` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `topic_reads_topic_id_foreign` FOREIGN KEY (`topic_id`) REFERENCES `topics` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `topic_reads_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -2023,12 +2023,12 @@ CREATE TABLE `topics` (
   `bug` tinyint(1) NOT NULL DEFAULT '0',
   `suggestion` tinyint(1) NOT NULL DEFAULT '0',
   `implemented` tinyint(1) NOT NULL DEFAULT '0',
-  `num_post` int DEFAULT NULL,
+  `num_post` int unsigned DEFAULT NULL,
   `first_post_user_id` int unsigned DEFAULT NULL,
-  `last_post_id` int DEFAULT NULL,
+  `last_post_id` int unsigned DEFAULT NULL,
   `last_post_user_id` int unsigned DEFAULT NULL,
   `last_post_created_at` timestamp NULL DEFAULT NULL,
-  `views` int DEFAULT NULL,
+  `views` int unsigned DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `forum_id` smallint unsigned NOT NULL,
@@ -2037,8 +2037,8 @@ CREATE TABLE `topics` (
   KEY `topics_created_at_index` (`created_at`),
   KEY `topics_first_post_user_id_foreign` (`first_post_user_id`),
   KEY `topics_last_post_user_id_foreign` (`last_post_user_id`),
-  KEY `topics_last_post_id_foreign` (`last_post_id`),
   KEY `topics_last_post_created_at_index` (`last_post_created_at`),
+  KEY `topics_last_post_id_foreign` (`last_post_id`),
   CONSTRAINT `topics_first_post_user_id_foreign` FOREIGN KEY (`first_post_user_id`) REFERENCES `users` (`id`) ON UPDATE CASCADE,
   CONSTRAINT `topics_forum_id_foreign` FOREIGN KEY (`forum_id`) REFERENCES `forums` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `topics_last_post_id_foreign` FOREIGN KEY (`last_post_id`) REFERENCES `posts` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
@@ -2070,7 +2070,7 @@ CREATE TABLE `torrent_reseeds` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `torrent_id` int unsigned NOT NULL,
   `user_id` int unsigned NOT NULL,
-  `requests_count` int NOT NULL DEFAULT '0',
+  `requests_count` int unsigned NOT NULL DEFAULT '0',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -2126,7 +2126,7 @@ CREATE TABLE `torrents` (
   `mediainfo` longtext COLLATE utf8mb4_unicode_ci,
   `bdinfo` longtext COLLATE utf8mb4_unicode_ci,
   `file_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `num_file` int NOT NULL,
+  `num_file` int unsigned NOT NULL,
   `folder` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `size` double NOT NULL,
   `nfo` blob,
@@ -2141,15 +2141,15 @@ CREATE TABLE `torrents` (
   `tvdb` int unsigned DEFAULT NULL,
   `mal` int unsigned DEFAULT NULL,
   `igdb` int unsigned DEFAULT NULL,
-  `season_number` int DEFAULT NULL,
-  `episode_number` int DEFAULT NULL,
+  `season_number` int unsigned DEFAULT NULL,
+  `episode_number` int unsigned DEFAULT NULL,
   `free` smallint NOT NULL DEFAULT '0',
   `doubleup` tinyint(1) NOT NULL DEFAULT '0',
   `refundable` tinyint(1) NOT NULL DEFAULT '0',
   `highspeed` tinyint(1) NOT NULL DEFAULT '0',
   `status` smallint NOT NULL DEFAULT '0',
   `moderated_at` datetime DEFAULT NULL,
-  `moderated_by` int DEFAULT NULL,
+  `moderated_by` int unsigned DEFAULT NULL,
   `anon` tinyint(1) NOT NULL DEFAULT '0',
   `sticky` tinyint(1) NOT NULL DEFAULT '0',
   `internal` tinyint(1) NOT NULL DEFAULT '0',
@@ -2161,8 +2161,8 @@ CREATE TABLE `torrents` (
   `du_until` datetime DEFAULT NULL,
   `type_id` smallint unsigned DEFAULT NULL,
   `resolution_id` smallint unsigned DEFAULT NULL,
-  `distributor_id` int DEFAULT NULL,
-  `region_id` int DEFAULT NULL,
+  `distributor_id` int unsigned DEFAULT NULL,
+  `region_id` int unsigned DEFAULT NULL,
   `personal_release` tinyint(1) NOT NULL DEFAULT '0',
   `balance` bigint NOT NULL DEFAULT '0',
   `balance_offset` bigint NOT NULL DEFAULT '0',
@@ -2250,11 +2250,11 @@ DROP TABLE IF EXISTS `user_audibles`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `user_audibles` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int unsigned NOT NULL,
-  `room_id` int DEFAULT NULL,
+  `room_id` int unsigned DEFAULT NULL,
   `target_id` int unsigned DEFAULT NULL,
-  `bot_id` int DEFAULT NULL,
+  `bot_id` int unsigned DEFAULT NULL,
   `status` tinyint(1) NOT NULL DEFAULT '0',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -2274,11 +2274,11 @@ DROP TABLE IF EXISTS `user_echoes`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `user_echoes` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int unsigned NOT NULL,
-  `room_id` int DEFAULT NULL,
+  `room_id` int unsigned DEFAULT NULL,
   `target_id` int unsigned DEFAULT NULL,
-  `bot_id` int DEFAULT NULL,
+  `bot_id` int unsigned DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -2313,7 +2313,7 @@ DROP TABLE IF EXISTS `user_notifications`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `user_notifications` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int unsigned NOT NULL,
   `block_notifications` tinyint(1) NOT NULL DEFAULT '0',
   `show_bon_gift` tinyint(1) NOT NULL DEFAULT '1',
@@ -2375,7 +2375,7 @@ DROP TABLE IF EXISTS `user_privacy`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `user_privacy` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int unsigned NOT NULL,
   `private_profile` tinyint(1) NOT NULL DEFAULT '0',
   `hidden` tinyint(1) NOT NULL DEFAULT '0',
@@ -2510,7 +2510,7 @@ CREATE TABLE `users` (
   `two_factor_recovery_codes` text COLLATE utf8mb4_unicode_ci,
   `two_factor_confirmed_at` timestamp NULL DEFAULT NULL,
   `passkey` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `group_id` int NOT NULL,
+  `group_id` int unsigned NOT NULL,
   `uploaded` bigint unsigned NOT NULL DEFAULT '0',
   `downloaded` bigint unsigned NOT NULL DEFAULT '0',
   `image` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -3049,3 +3049,4 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (366,'2025_11_08_09
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (367,'2025_11_18_080804_echoes_audibles_unique_keys',1);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (368,'2025_11_29_101934_update_events_rename_to_giveaways',1);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (369,'2026_01_06_231535_remove_unnecessary_bigints',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (370,'2026_01_07_040502_mark_columns_as_unsigned',1);
