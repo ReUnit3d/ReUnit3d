@@ -97,7 +97,7 @@ return new class () extends Migration {
             $table->dropIndex(['user_id']);
             $table->foreign('user_id')->references('id')->on('users')->cascadeOnUpdate();
             $table->dropIndex(['gifted_user_id']);
-            $table->foreign('gifted_user_id')->references('id')->on('users')->cascadeOnUpdate()->nullOnDelete();
+            $table->foreign('gifted_user_id')->references('id')->on('users')->cascadeOnUpdate();
         });
 
         DB::table('forum_permissions')

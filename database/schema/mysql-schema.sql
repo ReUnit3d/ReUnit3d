@@ -480,7 +480,7 @@ CREATE TABLE `donations` (
   KEY `donations_package_id_index` (`package_id`),
   KEY `donations_user_id_foreign` (`user_id`),
   KEY `donations_gifted_user_id_foreign` (`gifted_user_id`),
-  CONSTRAINT `donations_gifted_user_id_foreign` FOREIGN KEY (`gifted_user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `donations_gifted_user_id_foreign` FOREIGN KEY (`gifted_user_id`) REFERENCES `users` (`id`) ON UPDATE CASCADE,
   CONSTRAINT `donations_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
