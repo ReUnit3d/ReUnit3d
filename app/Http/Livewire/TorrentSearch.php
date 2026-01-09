@@ -312,7 +312,7 @@ class TorrentSearch extends Component
     }
 
     /**
-     * @var \Illuminate\Database\Eloquent\Collection<int, Resolution>
+     * @var \Illuminate\Database\Eloquent\Collection<int, TmdbGenre>
      */
     final protected \Illuminate\Database\Eloquent\Collection $genres {
         get => cache()->flexible(
@@ -345,7 +345,7 @@ class TorrentSearch extends Component
     }
 
     /**
-     * @var \Illuminate\Support\Collection<int, TmdbMovie>
+     * @var \Illuminate\Support\Collection<int, string|null>
      */
     final protected \Illuminate\Support\Collection $primaryLanguages {
         get => cache()->flexible(
@@ -525,7 +525,7 @@ class TorrentSearch extends Component
     }
 
     /**
-     * @var \Illuminate\Contracts\Pagination\LengthAwarePaginator<int, Torrent>
+     * @var LengthAwarePaginator<int, TmdbMovie|TmdbTv|null>
      */
     final protected $groupedTorrents {
         get {
@@ -754,7 +754,7 @@ class TorrentSearch extends Component
     }
 
     /**
-     * @var \Illuminate\Contracts\Pagination\LengthAwarePaginator<int, Torrent>
+     * @var LengthAwarePaginator<int, Torrent>
      */
     final protected $groupedPosters {
         get {
@@ -795,11 +795,11 @@ class TorrentSearch extends Component
             $groups = $groups->through(function ($group) use ($movies, $tv) {
                 switch ($group->meta) {
                     case 'movie':
-                        $group->movie = $movies[$group->tmdb_movie_id] ?? null;
+                        $group->setAttribute('movie', $movies[$group->tmdb_movie_id] ?? null);
 
                         break;
                     case 'tv':
-                        $group->tv = $tv[$group->tmdb_tv_id] ?? null;
+                        $group->setAttribute('tv', $tv[$group->tmdb_tv_id] ?? null);
 
                         break;
                 }

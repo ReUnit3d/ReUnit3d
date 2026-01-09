@@ -56,10 +56,12 @@ class TmdbPersonCredit extends Component
         get => cache()->get('personal_freeleech:'.auth()->user()->id) ?? false;
     }
 
-    /*
+    /**
      * Livewire doesn't support enum properties, so we have to convert it manually.
+     *
+     * @param-out Occupation $value
      */
-    public function updatingOccupation(&$value): void
+    public function updatingOccupation(int|string &$value): void
     {
         $value = Occupation::from($value);
     }
@@ -105,7 +107,7 @@ class TmdbPersonCredit extends Component
     }
 
     /**
-     * @return \Illuminate\Support\Collection<int, Torrent>
+     * @var \Illuminate\Support\Collection<int, Torrent>
      */
     final protected \Illuminate\Support\Collection $medias {
         get {
