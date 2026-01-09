@@ -1366,7 +1366,7 @@ CREATE TABLE `reports` (
   `reported_request_id` int unsigned DEFAULT NULL,
   `message` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `assigned_to` int unsigned DEFAULT NULL,
-  `verdict` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `verdict` text COLLATE utf8mb4_unicode_ci,
   `snoozed_until` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
