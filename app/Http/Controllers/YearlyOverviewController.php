@@ -75,30 +75,6 @@ class YearlyOverviewController extends Controller
                     ->take(10)
                     ->get()
             ),
-            'bottomMovies' => cache()->rememberForever(
-                'yearly-overview:'.$year.':bottom-movies',
-                fn () => Torrent::with('movie')
-                    ->select([
-                        'tmdb_movie_id',
-                        DB::raw('COUNT(h.user_id) as download_count'),
-                        DB::raw('MIN(category_id) as category_id'),
-                    ])
-                    ->leftJoinSub(
-                        History::query()
-                            ->whereNotNull('completed_at')
-                            ->where('history.created_at', '>=', $year.'-01-01 00:00:00')
-                            ->where('history.created_at', '<=', $year.'-12-31 23:59:59'),
-                        'h',
-                        fn ($join) => $join->on('torrents.id', '=', 'h.torrent_id')
-                    )
-                    ->where('tmdb_movie_id', '!=', 0)
-                    ->whereNotNull('tmdb_movie_id')
-                    ->whereRelation('category', 'movie_meta', '=', true)
-                    ->groupBy('tmdb_movie_id')
-                    ->orderBy('download_count')
-                    ->take(5)
-                    ->get()
-            ),
             'topTv' => cache()->rememberForever(
                 'yearly-overview:'.$year.':top-tv',
                 fn () => Torrent::with('tv')
@@ -121,30 +97,6 @@ class YearlyOverviewController extends Controller
                     ->groupBy('tmdb_tv_id')
                     ->orderByDesc('download_count')
                     ->take(10)
-                    ->get()
-            ),
-            'bottomTv' => cache()->rememberForever(
-                'yearly-overview:'.$year.':bottom-tv',
-                fn () => Torrent::with('tv')
-                    ->select([
-                        'tmdb_tv_id',
-                        DB::raw('COUNT(h.user_id) as download_count'),
-                        DB::raw('MIN(category_id) as category_id'),
-                    ])
-                    ->leftJoinSub(
-                        History::query()
-                            ->whereNotNull('completed_at')
-                            ->where('history.created_at', '>=', $year.'-01-01 00:00:00')
-                            ->where('history.created_at', '<=', $year.'-12-31 23:59:59'),
-                        'h',
-                        fn ($join) => $join->on('torrents.id', '=', 'h.torrent_id')
-                    )
-                    ->where('tmdb_tv_id', '!=', 0)
-                    ->whereNotNull('tmdb_tv_id')
-                    ->whereRelation('category', 'tv_meta', '=', true)
-                    ->groupBy('tmdb_tv_id')
-                    ->orderBy('download_count')
-                    ->take(5)
                     ->get()
             ),
             'uploaders' => cache()->remember(
