@@ -33,6 +33,7 @@ use App\Console\Commands\AutoRecycleClaimedTorrentRequests;
 use App\Console\Commands\AutoRecycleFailedLogins;
 use App\Console\Commands\AutoRecycleInvites;
 use App\Console\Commands\AutoRefundDownload;
+use App\Console\Commands\AutoRemoveExpiredBlockedIps;
 use App\Console\Commands\AutoRemoveExpiredDonors;
 use App\Console\Commands\AutoRemoveFeaturedTorrent;
 use App\Console\Commands\AutoRemovePersonalFreeleech;
@@ -90,6 +91,7 @@ class Kernel extends ConsoleKernel
         $schedule->command(AutoBonAllocation::class)->hourly();
         $schedule->command(AutoRemovePersonalFreeleech::class)->hourly();
         $schedule->command(AutoRemoveFeaturedTorrent::class)->hourly();
+        $schedule->command(AutoRemoveExpiredBlockedIps::class)->daily();
         $schedule->command(AutoRecycleInvites::class)->daily();
         $schedule->command(AutoRecycleAudits::class)->daily();
         $schedule->command(AutoRecycleFailedLogins::class)->daily();
