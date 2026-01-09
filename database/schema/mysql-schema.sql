@@ -1358,15 +1358,15 @@ DROP TABLE IF EXISTS `reports`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `reports` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `reporter_id` int unsigned NOT NULL,
   `reported_user_id` int unsigned DEFAULT NULL,
   `reported_torrent_id` int unsigned DEFAULT NULL,
   `reported_request_id` int unsigned DEFAULT NULL,
-  `message` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `message` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `assigned_to` int unsigned DEFAULT NULL,
-  `verdict` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `verdict` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `snoozed_until` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -3050,3 +3050,4 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (367,'2025_11_18_08
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (368,'2025_11_29_101934_update_events_rename_to_giveaways',1);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (369,'2026_01_06_231535_remove_unnecessary_bigints',1);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (370,'2026_01_07_040502_mark_columns_as_unsigned',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (371,'2026_01_09_015532_alter_table_reports_make_verdict_nullable',1);
