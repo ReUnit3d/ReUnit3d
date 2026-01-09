@@ -28,7 +28,7 @@ return new class () extends Migration {
             $table->string('type')->change();
             $table->string('title')->change();
             $table->text('message')->change();
-            $table->string('verdict')->nullable()->change();
+            $table->text('verdict')->nullable()->change();
         });
     }
 };
