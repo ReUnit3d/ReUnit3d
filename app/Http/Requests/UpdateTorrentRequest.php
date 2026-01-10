@@ -16,6 +16,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests;
 
+use App\Helpers\TorrentTools;
 use App\Models\Category;
 use App\Models\Scopes\ApprovedScope;
 use App\Models\Torrent;
@@ -45,6 +46,7 @@ class UpdateTorrentRequest extends FormRequest
             'tvdb'          => $this->has('tv_exists_on_tvdb') ? ($this->input('tvdb') ?: null) : null,
             'mal'           => $this->has('anime_exists_on_mal') ? ($this->input('mal') ?: null) : null,
             'igdb'          => $this->has('game_exists_on_igdb') ? ($this->input('igdb') ?: null) : null,
+            'mediainfo'     => TorrentTools::anonymizeMediainfo($this->filled('mediainfo') ? $this->string('mediainfo') : null),
         ]);
     }
 
