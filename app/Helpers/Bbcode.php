@@ -287,9 +287,7 @@ class Bbcode
 
         // Censor words
         foreach (config('censor.redact', []) as $word) {
-            if (preg_match(\sprintf('/\b%s(?=[.,]|$|\s)/mi', $word), (string) $source)) {
-                $source = str_replace($word, \sprintf("<span class='censor'>%s</span>", $word), (string) $source);
-            }
+            $source = preg_replace("/\b{$word}(?=[.,]|$|\s)/mi", "<span class='censor'>{$word}</span>", (string) $source);
         }
 
         foreach (config('censor.replace', []) as $word => $replacementWord) {
