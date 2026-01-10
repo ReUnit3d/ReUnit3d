@@ -667,8 +667,8 @@ class TorrentSearch extends Component
             $movieIds = $groups->getCollection()->where('meta', '=', 'movie')->pluck('tmdb_movie_id');
             $tvIds = $groups->getCollection()->where('meta', '=', 'tv')->pluck('tmdb_tv_id');
 
-            $movies = TmdbMovie::with('genres', 'directors')->whereIntegerInRaw('id', $movieIds)->get()->keyBy('id');
-            $tv = TmdbTv::with('genres', 'creators')->whereIntegerInRaw('id', $tvIds)->get()->keyBy('id');
+            $movies = TmdbMovie::query()->with('genres', 'directors')->whereIntegerInRaw('id', $movieIds)->get()->keyBy('id');
+            $tv = TmdbTv::query()->with('genres', 'creators')->whereIntegerInRaw('id', $tvIds)->get()->keyBy('id');
 
             if ($isSqlAllowed) {
                 $torrents = Torrent::query()
@@ -789,8 +789,8 @@ class TorrentSearch extends Component
             $movieIds = $groups->getCollection()->where('meta', '=', 'movie')->pluck('tmdb_movie_id');
             $tvIds = $groups->getCollection()->where('meta', '=', 'tv')->pluck('tmdb_tv_id');
 
-            $movies = TmdbMovie::with('genres', 'directors')->whereIntegerInRaw('id', $movieIds)->get()->keyBy('id');
-            $tv = TmdbTv::with('genres', 'creators')->whereIntegerInRaw('id', $tvIds)->get()->keyBy('id');
+            $movies = TmdbMovie::query()->with('genres', 'directors')->whereIntegerInRaw('id', $movieIds)->get()->keyBy('id');
+            $tv = TmdbTv::query()->with('genres', 'creators')->whereIntegerInRaw('id', $tvIds)->get()->keyBy('id');
 
             $groups = $groups->through(function ($group) use ($movies, $tv) {
                 switch ($group->meta) {

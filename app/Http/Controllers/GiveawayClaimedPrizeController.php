@@ -79,7 +79,7 @@ class GiveawayClaimedPrizeController extends Controller
                     break;
             }
 
-            GiveawayClaimedPrize::create([
+            GiveawayClaimedPrize::query()->create([
                 'user_id'     => $request->user()->id,
                 'giveaway_id' => $giveaway->id,
                 'bon'         => $bon_won,

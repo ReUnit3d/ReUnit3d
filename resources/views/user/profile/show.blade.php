@@ -905,7 +905,7 @@
                         <div class="key-value__group">
                             <dt>{{ __('common.group') }}</dt>
                             <dd>
-                                @if (null !== ($group = \App\Models\Group::find($externalUser['group_id'])))
+                                @if (null !== ($group = \App\Models\Group::query()->find($externalUser['group_id'])))
                                     <span class="user-tag">
                                         <span
                                             class="user-tag__link {{ $group->icon }}"

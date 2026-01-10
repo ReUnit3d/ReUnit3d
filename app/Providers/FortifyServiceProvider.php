@@ -178,7 +178,7 @@ class FortifyServiceProvider extends ServiceProvider
                 defer(function () use ($user, $request): void {
                     $ip = $request->ip();
 
-                    FailedLoginAttempt::create([
+                    FailedLoginAttempt::query()->create([
                         'user_id'    => $user->id,
                         'username'   => $request->username,
                         'ip_address' => $ip,
@@ -208,7 +208,7 @@ class FortifyServiceProvider extends ServiceProvider
                         ->count();
 
                     if ($ipAttemptCount >= config('other.auth.brute-force.max-attempts')) {
-                        BlockedIp::upsert([[
+                        BlockedIp::query()->upsert([[
                             'ip_address' => $ip,
                             'user_id'    => User::SYSTEM_USER_ID,
                             'reason'     => 'Brute-force attempt: 6 failed attempts in last '.config('other.auth.brute-force.interval').' s',

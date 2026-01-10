@@ -48,7 +48,7 @@ class AutoBonAllocation extends Command
     {
         $now = now();
 
-        $bonEarnings = BonEarning::with('conditions')->orderBy('position')->get();
+        $bonEarnings = BonEarning::query()->with('conditions')->orderBy('position')->get();
 
         $earningsQuery = str_repeat('(', $bonEarnings->count()).'0';
 

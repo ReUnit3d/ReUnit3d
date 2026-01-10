@@ -28,7 +28,7 @@ class TopNavComposer
             'pages' => cache()->flexible(
                 'cached-pages',
                 [3600, 3600 * 2],
-                fn () => Page::select(['id', 'name', 'created_at'])->take(6)->get()
+                fn () => Page::query()->select(['id', 'name', 'created_at'])->take(6)->get()
             ),
             'hasUnreadTicket' => Ticket::query()
                 ->when(

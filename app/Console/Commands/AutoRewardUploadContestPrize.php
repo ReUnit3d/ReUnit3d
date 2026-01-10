@@ -49,7 +49,8 @@ class AutoRewardUploadContestPrize extends Command
     final public function handle(): void
     {
         // Get all active upload contests
-        $activeUploadContests = UploadContest::where('ends_at', '<', now()->toDateString())
+        $activeUploadContests = UploadContest::query()
+            ->where('ends_at', '<', now()->toDateString())
             ->where('awarded', '=', 0)
             ->get();
 
@@ -88,7 +89,7 @@ class AutoRewardUploadContestPrize extends Command
                 }
 
                 // Persist the winners
-                UploadContestWinner::create([
+                UploadContestWinner::query()->create([
                     'upload_contest_id' => $activeUploadContest->id,
                     'user_id'           => $winner->user->id,
                     'place_number'      => $i + 1,

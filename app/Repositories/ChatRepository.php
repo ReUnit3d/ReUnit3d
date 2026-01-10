@@ -28,7 +28,7 @@ class ChatRepository
 {
     public function message(int $userId, int $roomId, string $message, ?int $receiver = null, ?int $bot = null): Message
     {
-        $message = Message::create([
+        $message = Message::query()->create([
             'user_id'     => $userId,
             'chatroom_id' => $roomId,
             'message'     => $message,
@@ -45,7 +45,7 @@ class ChatRepository
 
     public function botMessage(int $botId, int $roomId, string $message, ?int $receiver = null): void
     {
-        $save = Message::create([
+        $save = Message::query()->create([
             'bot_id'      => $botId,
             'user_id'     => 1,
             'chatroom_id' => 0,
@@ -53,7 +53,7 @@ class ChatRepository
             'receiver_id' => $receiver,
         ]);
 
-        $message = Message::with([
+        $message = Message::query()->with([
             'bot',
             'user'     => ['group', 'chatStatus'],
             'receiver' => ['group', 'chatStatus'],
@@ -66,7 +66,7 @@ class ChatRepository
 
     public function privateMessage(int $userId, int $roomId, string $message, ?int $receiver = null, ?int $bot = null, ?bool $ignore = null): Message
     {
-        $save = Message::create([
+        $save = Message::query()->create([
             'user_id'     => $userId,
             'chatroom_id' => 0,
             'message'     => $message,
@@ -191,7 +191,7 @@ class ChatRepository
                 $message = $messages->last();
                 echo $message['id']."\n";
 
-                $message = Message::find($message->id);
+                $message = Message::query()->find($message->id);
 
                 if ($message->receiver_id === null) {
                     $message->delete();
@@ -205,7 +205,7 @@ class ChatRepository
         if ($bot) {
             $this->message(User::SYSTEM_USER_ID, $this->systemChatroom(), $message, null, $bot);
         } else {
-            $systemBotId = Bot::where('command', 'systembot')->first()->id;
+            $systemBotId = Bot::query()->where('command', 'systembot')->first()->id;
 
             $this->message(User::SYSTEM_USER_ID, $this->systemChatroom(), $message, null, $systemBotId);
         }
@@ -221,12 +221,12 @@ class ChatRepository
             if ($room instanceof Chatroom) {
                 $room = $room->id;
             } elseif (\is_int($room)) {
-                $room = Chatroom::findOrFail($room)->id;
+                $room = Chatroom::query()->findOrFail($room)->id;
             } else {
                 $room = Chatroom::query()->where('name', '=', $room)->first()->id;
             }
         } elseif (\is_int($config)) {
-            $room = Chatroom::findOrFail($config)->id;
+            $room = Chatroom::query()->findOrFail($config)->id;
         } else {
             $room = Chatroom::query()->where('name', '=', $config)->first()->id;
         }
