@@ -679,6 +679,7 @@ class TorrentController extends BaseController
                             'media_info'       => $hit['mediainfo'],
                             'bd_info'          => $hit['bdinfo'],
                             'description'      => $hit['description'],
+                            'info_hash'        => $hit['info_hash'],
                             'size'             => $hit['size'],
                             'num_file'         => $hit['num_file'],
                             'files'            => $hit['files'],
@@ -724,6 +725,9 @@ class TorrentController extends BaseController
         $torrents->through(function ($torrent) {
             $torrent['attributes']['download_link'] = route('torrent.download.rsskey', ['id' => $torrent['id'], 'rsskey' => auth(AuthGuard::API->value)->user()->rsskey]);
             $torrent['attributes']['magnet_link'] = config('torrent.magnet') ? 'magnet:?dn='.$torrent['attributes']['name'].'&xt=urn:btih:'.$torrent['attributes']['info_hash'].'&as='.route('torrent.download.rsskey', ['id' => $torrent['id'], 'rsskey' => auth(AuthGuard::API->value)->user()->rsskey]).'&tr='.route('announce', ['passkey' => auth('api')->user()->passkey]).'&xl='.$torrent['attributes']['size'] : null;
+
+            // Info hash is only used for the magnet link if it's enabled. Make sure it's erased from the response before returned to the user.
+            unset($torrent['attributes']['info_hash']);
 
             return $torrent;
         });
