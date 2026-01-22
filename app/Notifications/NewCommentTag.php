@@ -17,7 +17,10 @@ declare(strict_types=1);
 namespace App\Notifications;
 
 use App\Models\Article;
+use App\Models\IgdbGame;
 use App\Models\TmdbCollection;
+use App\Models\TmdbMovie;
+use App\Models\TmdbTv;
 use App\Models\Comment;
 use App\Models\Playlist;
 use App\Models\Ticket;
@@ -35,7 +38,7 @@ class NewCommentTag extends Notification implements ShouldQueue
     /**
      * NewCommentTag Constructor.
      */
-    public function __construct(public Torrent|TorrentRequest|Ticket|Playlist|TmdbCollection|Article $model, public Comment $comment)
+    public function __construct(public Torrent|TorrentRequest|Ticket|Playlist|TmdbCollection|TmdbMovie|TmdbTv|IgdbGame|Article $model, public Comment $comment)
     {
     }
 
@@ -99,6 +102,13 @@ class NewCommentTag extends Notification implements ShouldQueue
                 // If the sender's group ID is found in the "Block all notifications from the selected groups" array,
                 // the expression will return false.
                 return ! \in_array($this->comment->user->group_id, $notifiable->notification?->json_mention_groups ?? [], true);
+            case TmdbCollection::class:
+            case TmdbMovie::class:
+            case TmdbTv::class:
+            case IgdbGame::class:
+                // If the sender's group ID is found in the "Block all notifications from the selected groups" array,
+                // the expression will return false.
+                return ! \in_array($this->comment->user->group_id, $notifiable->notification?->json_mention_groups ?? [], true);
         }
 
         return true;
@@ -139,6 +149,21 @@ class NewCommentTag extends Notification implements ShouldQueue
                 'title' => $title,
                 'body'  => $username.' has tagged you in an comment on Collection '.$this->model->name,
                 'url'   => '/mediahub/collections/'.$this->model->id,
+            ],
+            TmdbMovie::class => [
+                'title' => $title,
+                'body'  => $username.' has tagged you in a comment on Movie '.$this->model->title,
+                'url'   => '/torrents/similar/'.($this->model->torrents()->value('category_id') ?? 1).'.'.$this->model->id,
+            ],
+            TmdbTv::class => [
+                'title' => $title,
+                'body'  => $username.' has tagged you in a comment on TV Show '.$this->model->name,
+                'url'   => '/torrents/similar/'.($this->model->torrents()->value('category_id') ?? 2).'.'.$this->model->id,
+            ],
+            IgdbGame::class => [
+                'title' => $title,
+                'body'  => $username.' has tagged you in a comment on Game '.$this->model->name,
+                'url'   => '/torrents/similar/'.Torrent::query()->where('igdb', '=', $this->model->id)->value('category_id').'.'.$this->model->id,
             ],
             Article::class => [
                 'title' => $title,
