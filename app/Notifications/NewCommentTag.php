@@ -73,45 +73,21 @@ class NewCommentTag extends Notification implements ShouldQueue
             return false;
         }
 
-        // Evaluate model based settings
-        switch ($this->model::class) {
-            case Torrent::class:
-                if ($notifiable->notification?->show_mention_torrent_comment === 0) {
-                    return false;
-                }
+        // Evaluate model-specific notification settings
+        $modelSpecificDisabled = match ($this->model::class) {
+            Torrent::class        => $notifiable->notification?->show_mention_torrent_comment === 0,
+            TorrentRequest::class => $notifiable->notification?->show_mention_request_comment === 0,
+            Ticket::class         => $this->model->staff_id === $this->comment->id,
+            Playlist::class, Article::class => $notifiable->notification?->show_mention_article_comment === 0,
+            default => false,
+        };
 
-                // If the sender's group ID is found in the "Block all notifications from the selected groups" array,
-                // the expression will return false.
-                return ! \in_array($this->comment->user->group_id, $notifiable->notification?->json_mention_groups ?? [], true);
-            case TorrentRequest::class:
-                if ($notifiable->notification?->show_mention_request_comment === 0) {
-                    return false;
-                }
-
-                // If the sender's group ID is found in the "Block all notifications from the selected groups" array,
-                // the expression will return false.
-                return ! \in_array($this->comment->user->group_id, $notifiable->notification?->json_mention_groups ?? [], true);
-            case Ticket::class:
-                return ! ($this->model->staff_id === $this->comment->id);
-            case Playlist::class:
-            case Article::class:
-                if ($notifiable->notification?->show_mention_article_comment === 0) {
-                    return false;
-                }
-
-                // If the sender's group ID is found in the "Block all notifications from the selected groups" array,
-                // the expression will return false.
-                return ! \in_array($this->comment->user->group_id, $notifiable->notification?->json_mention_groups ?? [], true);
-            case TmdbCollection::class:
-            case TmdbMovie::class:
-            case TmdbTv::class:
-            case IgdbGame::class:
-                // If the sender's group ID is found in the "Block all notifications from the selected groups" array,
-                // the expression will return false.
-                return ! \in_array($this->comment->user->group_id, $notifiable->notification?->json_mention_groups ?? [], true);
+        if ($modelSpecificDisabled) {
+            return false;
         }
 
-        return true;
+        // If the sender's group ID is in the user's blocked groups list, don't send
+        return !\in_array($this->comment->user->group_id, $notifiable->notification?->json_mention_groups ?? [], true);
     }
 
     /**
