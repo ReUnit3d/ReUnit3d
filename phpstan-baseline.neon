@@ -7,24 +7,6 @@ parameters:
 			path: app/Actions/Fortify/UpdateUserProfileInformation.php
 
 		-
-			message: '#^Access to an undefined property App\\Models\\IgdbGame\|App\\Models\\TmdbMovie\|App\\Models\\TmdbTv\:\:\$first_air_date\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Bots/IRCAnnounceBotExternal.php
-
-		-
-			message: '#^Access to an undefined property App\\Models\\IgdbGame\|App\\Models\\TmdbMovie\|App\\Models\\TmdbTv\:\:\$first_release_date\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Bots/IRCAnnounceBotExternal.php
-
-		-
-			message: '#^Access to an undefined property App\\Models\\IgdbGame\|App\\Models\\TmdbMovie\|App\\Models\\TmdbTv\:\:\$release_date\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Bots/IRCAnnounceBotExternal.php
-
-		-
 			message: '#^Anonymous function should return Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\> but returns Illuminate\\Database\\Eloquent\\Builder\<App\\Models\\History\>\.$#'
 			identifier: return.type
 			count: 1
