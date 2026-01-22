@@ -7,6 +7,24 @@ parameters:
 			path: app/Actions/Fortify/UpdateUserProfileInformation.php
 
 		-
+			message: '#^Access to an undefined property App\\Models\\IgdbGame\|App\\Models\\TmdbMovie\|App\\Models\\TmdbTv\:\:\$first_air_date\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Bots/IRCAnnounceBotExternal.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\IgdbGame\|App\\Models\\TmdbMovie\|App\\Models\\TmdbTv\:\:\$first_release_date\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Bots/IRCAnnounceBotExternal.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\IgdbGame\|App\\Models\\TmdbMovie\|App\\Models\\TmdbTv\:\:\$release_date\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Bots/IRCAnnounceBotExternal.php
+
+		-
 			message: '#^Anonymous function should return Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\> but returns Illuminate\\Database\\Eloquent\\Builder\<App\\Models\\History\>\.$#'
 			identifier: return.type
 			count: 1
@@ -455,36 +473,6 @@ parameters:
 			identifier: argument.type
 			count: 1
 			path: app/Http/Livewire/TorrentRequestSearch.php
-
-		-
-			message: '#^Access to an undefined property App\\Models\\Torrent\:\:\$meta\.$#'
-			identifier: property.notFound
-			count: 2
-			path: app/Http/Livewire/TorrentSearch.php
-
-		-
-			message: '#^Anonymous function should return Illuminate\\Support\\Collection\<int, string\|null\> but returns Illuminate\\Support\\Collection\<int, string\|null\>\.$#'
-			identifier: return.type
-			count: 1
-			path: app/Http/Livewire/TorrentSearch.php
-
-		-
-			message: '#^Get hook for property App\\Http\\Livewire\\TorrentSearch\:\:\$groupedTorrents should return Illuminate\\Pagination\\LengthAwarePaginator\<int, App\\Models\\TmdbMovie\|App\\Models\\TmdbTv\|null\> but returns Illuminate\\Pagination\\LengthAwarePaginator\<int, App\\Models\\TmdbMovie\|App\\Models\\TmdbTv\|null\>\.$#'
-			identifier: return.type
-			count: 1
-			path: app/Http/Livewire/TorrentSearch.php
-
-		-
-			message: '#^Get hook for property App\\Http\\Livewire\\TorrentSearch\:\:\$primaryLanguages should return Illuminate\\Support\\Collection\<int, string\|null\> but returns Illuminate\\Support\\Collection\<int, string\|null\>\.$#'
-			identifier: return.type
-			count: 1
-			path: app/Http/Livewire/TorrentSearch.php
-
-		-
-			message: '#^Parameter \#3 \$callback of method Illuminate\\Cache\\Repository\:\:flexible\(\) expects callable\(\)\: Illuminate\\Support\\Collection\<int, string\|null\>, Closure\(\)\: Illuminate\\Support\\Collection\<int, string\|null\> given\.$#'
-			identifier: argument.type
-			count: 1
-			path: app/Http/Livewire/TorrentSearch.php
 
 		-
 			message: '#^Method App\\Http\\Middleware\\SetLanguage\:\:setSystemLocale\(\) has parameter \$request with no type specified\.$#'
