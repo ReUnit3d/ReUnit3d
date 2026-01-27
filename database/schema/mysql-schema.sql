@@ -2539,6 +2539,8 @@ CREATE TABLE `user_settings` (
   `standalone_css` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `show_poster` tinyint(1) NOT NULL DEFAULT '0',
   `unbookmark_torrents_on_completion` tinyint(1) NOT NULL,
+  `auto_freeleech_apply` tinyint(1) NOT NULL DEFAULT '0',
+  `auto_freeleech_min_tokens` int unsigned NOT NULL DEFAULT '0',
   `show_adult_content` tinyint(1) NOT NULL DEFAULT '1',
   `torrent_sort_field` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `torrent_search_autofocus` tinyint(1) NOT NULL DEFAULT '1',
@@ -3103,3 +3105,4 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (369,'2025_11_29_10
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (370,'2026_01_06_231535_remove_unnecessary_bigints',1);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (371,'2026_01_07_040502_mark_columns_as_unsigned',1);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (372,'2026_01_09_015532_alter_table_reports_make_verdict_nullable',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (373,'2026_01_14_120000_add_auto_freeleech_to_user_settings',1);
