@@ -80,6 +80,13 @@ Route::middleware('language')->group(function (): void {
         Route::get('/register/{code?}', fn (string $code) => to_route('register', ['code' => $code]));
     });
 
+    Route::middleware(['auth', 'banned'])->group(function (): void {
+        // Email verification
+        Route::get('/email/verify', [App\Http\Controllers\Auth\EmailVerificationController::class, 'create'])->name('verification.notice');
+        Route::get('/email/verify/{id}/{hash}', [App\Http\Controllers\Auth\EmailVerificationController::class, 'show'])->middleware(['signed'])->name('verification.verify');
+        Route::post('/email/verification-notification', [App\Http\Controllers\Auth\EmailVerificationController::class, 'store'])->middleware('throttle:'.GlobalRateLimit::EMAIL_VERIFICATION->value)->name('verification.send');
+    });
+
     /*
     |---------------------------------------------------------------------------------
     | Website (When Authorized) (Alpha Ordered)
