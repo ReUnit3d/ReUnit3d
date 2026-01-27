@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\Event;
 use function Pest\Laravel\assertDatabaseHas;
 
 test('newly registered user is greeted in chat room', function (): void {
+    $this->seed(UserSeeder::class);
     $this->seed(ChatroomSeeder::class);
     $user = User::factory()->create();
     $bot = Bot::factory()->create([
