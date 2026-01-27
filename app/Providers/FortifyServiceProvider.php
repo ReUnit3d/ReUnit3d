@@ -35,7 +35,6 @@ use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Laravel\Fortify\Contracts\LoginResponse;
 use Laravel\Fortify\Contracts\RegisterViewResponse;
-use Laravel\Fortify\Contracts\VerifyEmailResponse;
 use Laravel\Fortify\Fortify;
 
 use function Illuminate\Support\defer;
@@ -69,7 +68,7 @@ class FortifyServiceProvider extends ServiceProvider
                 }
 
                 // Check if user has read the rules
-                if ($request->user()->read_rules == 0) {
+                if ($user->read_rules == 0 && $user->hasVerifiedEmail()) {
                     return redirect()->to(config('other.rules_url'))
                         ->with('warning', trans('auth.require-rules'));
                 }
@@ -103,38 +102,6 @@ class FortifyServiceProvider extends ServiceProvider
                 return view('auth.register', ['code' => $request->query('code')]);
             }
         });
-
-        $this->app->instance(VerifyEmailResponse::class, new class () implements VerifyEmailResponse {
-            public function toResponse($request): \Illuminate\Http\RedirectResponse|\Illuminate\View\View
-            {
-                $user = $request->user()->load('group:id,slug');
-
-                if ($user->group->slug !== 'banned') {
-                    if ($user->group->slug === 'validating') {
-                        $user->can_download = true;
-                        $user->group_id = Group::query()->where('slug', '=', 'user')->soleValue('id');
-                        $user->save();
-
-                        cache()->forget('user:'.$user->passkey);
-
-                        Unit3dAnnounce::addUser($user);
-                    }
-
-                    // Check if user has read the rules
-                    if ($user->read_rules == 0) {
-                        return redirect()->to(config('other.rules_url'))
-                            ->with('success', trans('auth.activation-success'))
-                            ->with('warning', trans('auth.require-rules'));
-                    }
-
-                    return to_route('login')
-                        ->with('success', trans('auth.activation-success'));
-                }
-
-                return to_route('login')
-                    ->withErrors(trans('auth.activation-error'));
-            }
-        });
     }
 
     /**
@@ -151,7 +118,6 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::loginView(fn () => view('auth.login'));
         Fortify::confirmPasswordView(fn () => view('auth.confirm-password'));
         Fortify::twoFactorChallengeView(fn () => view('auth.two-factor-challenge'));
-        Fortify::verifyEmailView(fn () => view('auth.verify-email'));
 
         Fortify::createUsersUsing(CreateNewUser::class);
         Fortify::updateUserProfileInformationUsing(UpdateUserProfileInformation::class);
@@ -228,15 +194,6 @@ class FortifyServiceProvider extends ServiceProvider
 
             if ($password === true) {
                 $user->load('group:id,slug');
-
-                // Check if user is activated
-                if ($user->email_verified_at === null || $user->group->slug === 'validating') {
-                    $request->session()->invalidate();
-
-                    throw ValidationException::withMessages([
-                        Fortify::username() => __('auth.not-activated'),
-                    ]);
-                }
 
                 // Check if user is banned
                 if ($user->group->slug === 'banned') {
