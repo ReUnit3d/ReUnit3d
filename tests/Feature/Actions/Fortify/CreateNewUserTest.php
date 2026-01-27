@@ -16,7 +16,8 @@ declare(strict_types=1);
 
 use App\Models\Invite;
 use App\Models\User;
-use Database\Seeders\GroupSeeder;
+use Database\Seeders\ChatroomSeeder;
+use Database\Seeders\ChatStatusSeeder;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\URL;
@@ -26,7 +27,8 @@ use function Pest\Laravel\assertDatabaseMissing;
 use function Pest\Laravel\seed;
 
 beforeEach(function (): void {
-    seed(GroupSeeder::class);
+    seed(ChatroomSeeder::class);
+    seed(ChatStatusSeeder::class);
     Event::fake(Registered::class);
 });
 
