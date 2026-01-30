@@ -16,8 +16,6 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
-use App\Actions\Fortify\UpdateUserPassword;
-use App\Actions\Fortify\UpdateUserProfileInformation;
 use App\Models\BlockedIp;
 use App\Models\FailedLoginAttempt;
 use App\Models\Group;
@@ -100,11 +98,7 @@ class FortifyServiceProvider extends ServiceProvider
         RateLimiter::for('two-factor', fn (Request $request) => Limit::perMinute(5)->by('fortify-two-factor'.$request->session()->get('login.id')));
 
         Fortify::loginView(fn () => view('auth.login'));
-        Fortify::confirmPasswordView(fn () => view('auth.confirm-password'));
         Fortify::twoFactorChallengeView(fn () => view('auth.two-factor-challenge'));
-
-        Fortify::updateUserProfileInformationUsing(UpdateUserProfileInformation::class);
-        Fortify::updateUserPasswordsUsing(UpdateUserPassword::class);
 
         Fortify::authenticateUsing(function (Request $request): \Illuminate\Database\Eloquent\Model {
             $request->validate([
