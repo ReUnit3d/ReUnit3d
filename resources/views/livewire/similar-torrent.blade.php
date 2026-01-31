@@ -555,11 +555,13 @@
                         </div>
                     @endif
 
-                    <div class="panel__action">
-                        <button class="form__button form__button--text" x-bind="all">
-                            Expand all
-                        </button>
-                    </div>
+                    @if ($category->tv_meta)
+                        <div class="panel__action">
+                            <button class="form__button form__button--text" x-bind="all">
+                                Expand all
+                            </button>
+                        </div>
+                    @endif
                 </div>
             </header>
             <div class="data-table-wrapper">
