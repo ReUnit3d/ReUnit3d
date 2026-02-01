@@ -1568,9 +1568,7 @@ CREATE TABLE `seedboxes` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `clients_ip_unique` (`ip`),
   KEY `clients_user_id_foreign` (`user_id`),
-  KEY `clients_name_unique` (`name`),
   CONSTRAINT `clients_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -3147,3 +3145,4 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (372,'2026_01_09_01
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (373,'2026_01_14_120000_add_auto_freeleech_to_user_settings',1);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (374,'2026_01_27_073136_add_foreign_keys_everywhere',1);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (375,'2026_02_02_180456_add_foreign_keys_echoes_audibles_messages',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (376,'2026_02_03_012707_drop_keys_from_seedboxes',1);
