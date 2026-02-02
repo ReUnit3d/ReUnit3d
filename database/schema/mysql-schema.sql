@@ -1033,7 +1033,7 @@ DROP TABLE IF EXISTS `messages`;
 CREATE TABLE `messages` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int unsigned NOT NULL,
-  `chatroom_id` int unsigned NOT NULL,
+  `chatroom_id` int unsigned DEFAULT NULL,
   `receiver_id` int unsigned DEFAULT NULL,
   `bot_id` int unsigned DEFAULT NULL,
   `message` text COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -1042,6 +1042,10 @@ CREATE TABLE `messages` (
   PRIMARY KEY (`id`),
   KEY `messages_user_id_foreign` (`user_id`),
   KEY `messages_receiver_id_foreign` (`receiver_id`),
+  KEY `messages_bot_id_foreign` (`bot_id`),
+  KEY `messages_chatroom_id_foreign` (`chatroom_id`),
+  CONSTRAINT `messages_bot_id_foreign` FOREIGN KEY (`bot_id`) REFERENCES `bots` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `messages_chatroom_id_foreign` FOREIGN KEY (`chatroom_id`) REFERENCES `chatrooms` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `messages_receiver_id_foreign` FOREIGN KEY (`receiver_id`) REFERENCES `users` (`id`) ON UPDATE CASCADE,
   CONSTRAINT `messages_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -2343,6 +2347,8 @@ CREATE TABLE `user_audibles` (
   KEY `user_audibles_bot_id_index` (`bot_id`),
   KEY `user_audibles_status_index` (`status`),
   KEY `user_audibles_target_id_foreign` (`target_id`),
+  CONSTRAINT `user_audibles_bot_id_foreign` FOREIGN KEY (`bot_id`) REFERENCES `bots` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `user_audibles_room_id_foreign` FOREIGN KEY (`room_id`) REFERENCES `chatrooms` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `user_audibles_target_id_foreign` FOREIGN KEY (`target_id`) REFERENCES `users` (`id`) ON UPDATE CASCADE,
   CONSTRAINT `user_audibles_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -2365,6 +2371,8 @@ CREATE TABLE `user_echoes` (
   KEY `user_echoes_room_id_index` (`room_id`),
   KEY `user_echoes_bot_id_index` (`bot_id`),
   KEY `user_echoes_target_id_foreign` (`target_id`),
+  CONSTRAINT `user_echoes_bot_id_foreign` FOREIGN KEY (`bot_id`) REFERENCES `bots` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `user_echoes_room_id_foreign` FOREIGN KEY (`room_id`) REFERENCES `chatrooms` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `user_echoes_target_id_foreign` FOREIGN KEY (`target_id`) REFERENCES `users` (`id`) ON UPDATE CASCADE,
   CONSTRAINT `user_echoes_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -3138,3 +3146,4 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (371,'2026_01_07_04
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (372,'2026_01_09_015532_alter_table_reports_make_verdict_nullable',1);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (373,'2026_01_14_120000_add_auto_freeleech_to_user_settings',1);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (374,'2026_01_27_073136_add_foreign_keys_everywhere',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (375,'2026_02_02_180456_add_foreign_keys_echoes_audibles_messages',1);
