@@ -17,13 +17,11 @@ declare(strict_types=1);
 namespace App\Bots;
 
 use App\Events\Chatter;
-use App\Http\Resources\UserAudibleResource;
-use App\Http\Resources\UserEchoResource;
+use App\Http\Resources\ChatConversationResource;
 use App\Models\Bot;
+use App\Models\ChatConversation;
 use App\Models\Gift;
 use App\Models\User;
-use App\Models\UserAudible;
-use App\Models\UserEcho;
 use App\Notifications\NewBon;
 use App\Repositories\ChatRepository;
 
@@ -164,31 +162,17 @@ class SystemBot
         $message = $this->message;
 
         if ($type === 'message' || $type === 'private') {
-            // Create echo for user if missing
-            $affected = UserEcho::query()->upsert([[
-                'user_id' => $target->id,
-                'bot_id'  => $this->bot->id,
-            ]], ['user_id', 'bot_id']);
+            // Create conversation for user if missing
+            $affected = ChatConversation::query()->upsert([[
+                'user_id'    => $target->id,
+                'bot_id'     => $this->bot->id,
+                'status'     => false,
+                'deleted_at' => null,
+            ]], ['user_id', 'bot_id'], ['deleted_at']);
 
             if ($affected === 1) {
-                Chatter::dispatch('echo', $target->id, UserEchoResource::collection(
-                    UserEcho::query()
-                        ->with(['user', 'room', 'target', 'bot'])
-                        ->where('user_id', '=', $target->id)
-                        ->get()
-                ));
-            }
-
-            // Create audible for user if missing
-            $affected = UserAudible::query()->upsert([[
-                'user_id' => $target->id,
-                'bot_id'  => $this->bot->id,
-                'status'  => false,
-            ]], ['user_id', 'bot_id']);
-
-            if ($affected === 1) {
-                Chatter::dispatch('audible', $target->id, UserAudibleResource::collection(
-                    UserAudible::query()
+                Chatter::dispatch('conversations', $target->id, ChatConversationResource::collection(
+                    ChatConversation::query()
                         ->with(['user', 'room', 'target', 'bot'])
                         ->where('user_id', '=', $target->id)
                         ->get()

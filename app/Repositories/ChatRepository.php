@@ -108,7 +108,6 @@ class ChatRepository
                 'receiver' => ['group', 'chatStatus'],
             ])
             ->where('chatroom_id', '=', $roomId)
-            ->where('chatroom_id', '!=', 0)
             ->latest('id')
             ->limit(config('chat.message_limit'))
             ->get();
@@ -140,7 +139,7 @@ class ChatRepository
                     )
             )
             ->where('bot_id', '=', $botId)
-            ->where('chatroom_id', '=', 0)
+            ->whereNull('chatroom_id')
             ->latest('id')
             ->limit(config('chat.message_limit'))
             ->get();
@@ -171,7 +170,7 @@ class ChatRepository
                             ->where('receiver_id', '=', $senderId)
                     )
             )
-            ->where('chatroom_id', '=', 0)
+            ->whereNull('chatroom_id')
             ->latest('id')
             ->limit(config('chat.message_limit'))
             ->get();

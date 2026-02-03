@@ -153,12 +153,11 @@ document.addEventListener('alpine:init', () => {
 
         auth: user,
         statuses: [],
-        echoes: [],
+        conversations: [],
         chatrooms: [],
         messages: new Map(),
         users: new Map(),
         pings: [],
-        audibles: [],
         activePeer: new Map(),
         scroll: true,
         channel: null,
@@ -182,9 +181,8 @@ document.addEventListener('alpine:init', () => {
 
             Promise.all([
                 this.fetchStatuses(),
-                this.fetchEchoes(),
+                this.fetchConversations(),
                 this.fetchBots(),
-                this.fetchAudibles(),
                 this.fetchRooms(),
             ])
                 .then(() => {
@@ -226,23 +224,12 @@ document.addEventListener('alpine:init', () => {
         },
 
         // Fetchers
-        async fetchAudibles() {
+        async fetchConversations() {
             try {
-                const response = await axios.get('/api/chat/audibles');
-                this.audibles = response.data.data;
-                return this.fetchConfiguration();
+                const response = await axios.get('/api/chat/conversations');
+                this.conversations = this.sortConversations(response.data.data);
             } catch (error) {
-                console.error('Error fetching audibles:', error);
-                throw error;
-            }
-        },
-
-        async fetchEchoes() {
-            try {
-                const response = await axios.get('/api/chat/echoes');
-                this.echoes = this.sortEchoes(response.data.data);
-            } catch (error) {
-                console.error('Error fetching echoes:', error);
+                console.error('Error fetching conversations:', error);
                 throw error;
             }
         },
@@ -388,7 +375,7 @@ document.addEventListener('alpine:init', () => {
                 this.state.chat.activeRoom = newVal;
                 this.deletePing('room', newVal);
 
-                let currentRoom = this.echoes.find((o) => o.room && o.room.id == newVal);
+                let currentRoom = this.conversations.find((o) => o.room && o.room.id == newVal);
                 if (currentRoom) {
                     if (this.state.chat.room === currentRoom.room.id) {
                         this.fetchMessages();
@@ -397,10 +384,8 @@ document.addEventListener('alpine:init', () => {
                     }
                     this.state.message.receiver_id = null;
                     this.state.message.bot_id = null;
+                    this.state.chat.listening = currentRoom.audible ? 1 : 0;
                 }
-
-                let currentAudio = this.audibles.find((o) => o.room && o.room.id == newVal);
-                this.state.chat.listening = currentAudio && currentAudio.status ? 1 : 0;
             } else if (typeVal == 'target') {
                 this.state.chat.bot = 0;
                 this.state.chat.tab = newVal;
@@ -408,15 +393,15 @@ document.addEventListener('alpine:init', () => {
                 this.state.chat.activeTarget = newVal;
                 this.deletePing('target', newVal);
 
-                let currentTarget = this.echoes.find((o) => o.target && o.target.id == newVal);
+                let currentTarget = this.conversations.find(
+                    (o) => o.target && o.target.id == newVal,
+                );
                 if (currentTarget) {
                     this.changeTarget(currentTarget.target.id);
                     this.state.message.receiver_id = currentTarget.target.id;
                     this.state.message.bot_id = null;
+                    this.state.chat.listening = currentTarget.audible ? 1 : 0;
                 }
-
-                let currentAudio = this.audibles.find((o) => o.target && o.target.id == newVal);
-                this.state.chat.listening = currentAudio && currentAudio.status ? 1 : 0;
             } else if (typeVal == 'bot') {
                 this.state.chat.target = 0;
                 this.state.chat.tab = newVal;
@@ -424,15 +409,13 @@ document.addEventListener('alpine:init', () => {
                 this.state.chat.activeBot = newVal;
                 this.deletePing('bot', newVal);
 
-                let currentBot = this.echoes.find((o) => o.bot && o.bot.id == newVal);
+                let currentBot = this.conversations.find((o) => o.bot && o.bot.id == newVal);
                 if (currentBot) {
                     this.changeBot(currentBot.bot.id);
                     this.state.message.receiver_id = 1;
                     this.state.message.bot_id = currentBot.bot.id;
+                    this.state.chat.listening = currentBot.audible ? 1 : 0;
                 }
-
-                let currentAudio = this.audibles.find((o) => o.bot && o.bot.id == newVal);
-                this.state.chat.listening = currentAudio && currentAudio.status ? 1 : 0;
             }
         },
 
@@ -472,7 +455,7 @@ document.addEventListener('alpine:init', () => {
             if (id !== 1) {
                 // Update the user's chatroom in the database
                 axios
-                    .post(`/api/chat/echoes/delete/chatroom`, { room_id: id })
+                    .post(`/api/chat/conversations/delete/chatroom`, { room_id: id })
                     .then((response) => {
                         // Reassign the auth variable to the response data
                         this.auth = response.data;
@@ -509,7 +492,7 @@ document.addEventListener('alpine:init', () => {
             if (id !== 1) {
                 // Update the user's chatroom in the database
                 axios
-                    .post(`/api/chat/echoes/delete/target`, { target_id: id })
+                    .post(`/api/chat/conversations/delete/target`, { target_id: id })
                     .then((response) => {
                         // Reassign the auth variable to the response data
                         this.auth = response.data;
@@ -587,10 +570,8 @@ document.addEventListener('alpine:init', () => {
             this.chatter = window.Echo.private(`chatter.${this.auth.id}`);
 
             this.chatter.listen('Chatter', (e) => {
-                if (e.type == 'echo') {
-                    this.echoes = this.sortEchoes(e.echoes);
-                } else if (e.type == 'audible') {
-                    this.audibles = e.audibles;
+                if (e.type == 'conversations') {
+                    this.conversations = this.sortConversations(e.conversations);
                 } else if (e.type == 'new.message') {
                     if (
                         !this.state.chat.activeTab.startsWith('bot') &&
@@ -642,7 +623,7 @@ document.addEventListener('alpine:init', () => {
         },
 
         // Utility
-        sortEchoes(obj) {
+        sortConversations(obj) {
             if (!obj || !Array.isArray(obj)) return [];
 
             return obj.sort((a, b) => {

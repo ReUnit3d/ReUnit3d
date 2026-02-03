@@ -353,6 +353,33 @@ CREATE TABLE `categories` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `chat_conversations`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `chat_conversations` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int unsigned NOT NULL,
+  `room_id` int unsigned DEFAULT NULL,
+  `target_id` int unsigned DEFAULT NULL,
+  `bot_id` int unsigned DEFAULT NULL,
+  `audible` tinyint(1) NOT NULL DEFAULT '0',
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `user_audibles_user_id_room_id_unique` (`user_id`,`room_id`),
+  UNIQUE KEY `user_audibles_user_id_target_id_unique` (`user_id`,`target_id`),
+  UNIQUE KEY `user_audibles_user_id_bot_id_unique` (`user_id`,`bot_id`),
+  KEY `user_audibles_room_id_index` (`room_id`),
+  KEY `user_audibles_bot_id_index` (`bot_id`),
+  KEY `user_audibles_status_index` (`audible`),
+  KEY `user_audibles_target_id_foreign` (`target_id`),
+  CONSTRAINT `user_audibles_bot_id_foreign` FOREIGN KEY (`bot_id`) REFERENCES `bots` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `user_audibles_room_id_foreign` FOREIGN KEY (`room_id`) REFERENCES `chatrooms` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `user_audibles_target_id_foreign` FOREIGN KEY (`target_id`) REFERENCES `users` (`id`) ON UPDATE CASCADE,
+  CONSTRAINT `user_audibles_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `chat_statuses`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
@@ -2325,56 +2352,6 @@ CREATE TABLE `upload_contests` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-DROP TABLE IF EXISTS `user_audibles`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `user_audibles` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` int unsigned NOT NULL,
-  `room_id` int unsigned DEFAULT NULL,
-  `target_id` int unsigned DEFAULT NULL,
-  `bot_id` int unsigned DEFAULT NULL,
-  `status` tinyint(1) NOT NULL DEFAULT '0',
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `user_audibles_user_id_room_id_unique` (`user_id`,`room_id`),
-  UNIQUE KEY `user_audibles_user_id_target_id_unique` (`user_id`,`target_id`),
-  UNIQUE KEY `user_audibles_user_id_bot_id_unique` (`user_id`,`bot_id`),
-  KEY `user_audibles_room_id_index` (`room_id`),
-  KEY `user_audibles_bot_id_index` (`bot_id`),
-  KEY `user_audibles_status_index` (`status`),
-  KEY `user_audibles_target_id_foreign` (`target_id`),
-  CONSTRAINT `user_audibles_bot_id_foreign` FOREIGN KEY (`bot_id`) REFERENCES `bots` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `user_audibles_room_id_foreign` FOREIGN KEY (`room_id`) REFERENCES `chatrooms` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `user_audibles_target_id_foreign` FOREIGN KEY (`target_id`) REFERENCES `users` (`id`) ON UPDATE CASCADE,
-  CONSTRAINT `user_audibles_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-DROP TABLE IF EXISTS `user_echoes`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `user_echoes` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` int unsigned NOT NULL,
-  `room_id` int unsigned DEFAULT NULL,
-  `target_id` int unsigned DEFAULT NULL,
-  `bot_id` int unsigned DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `user_echoes_user_id_room_id_unique` (`user_id`,`room_id`),
-  UNIQUE KEY `user_echoes_user_id_target_id_unique` (`user_id`,`target_id`),
-  UNIQUE KEY `user_echoes_user_id_bot_id_unique` (`user_id`,`bot_id`),
-  KEY `user_echoes_room_id_index` (`room_id`),
-  KEY `user_echoes_bot_id_index` (`bot_id`),
-  KEY `user_echoes_target_id_foreign` (`target_id`),
-  CONSTRAINT `user_echoes_bot_id_foreign` FOREIGN KEY (`bot_id`) REFERENCES `bots` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `user_echoes_room_id_foreign` FOREIGN KEY (`room_id`) REFERENCES `chatrooms` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `user_echoes_target_id_foreign` FOREIGN KEY (`target_id`) REFERENCES `users` (`id`) ON UPDATE CASCADE,
-  CONSTRAINT `user_echoes_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `user_notes`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
@@ -3146,3 +3123,4 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (373,'2026_01_14_12
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (374,'2026_01_27_073136_add_foreign_keys_everywhere',1);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (375,'2026_02_02_180456_add_foreign_keys_echoes_audibles_messages',1);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (376,'2026_02_03_012707_drop_keys_from_seedboxes',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (377,'2026_02_04_184040_combine_user_audibles_echoes',1);

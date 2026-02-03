@@ -20,9 +20,9 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
- * @mixin \App\Models\UserEcho
+ * @mixin \App\Models\ChatConversation
  */
-class UserEchoResource extends JsonResource
+class ChatConversationResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -32,8 +32,9 @@ class UserEchoResource extends JsonResource
      *     user_id: int,
      *     user: ChatUserResource,
      *     target: ChatUserResource,
-     *     room: \App\Models\Chatroom,
-     *     bot: \App\Models\Bot,
+     *     room: \App\Models\Chatroom|null,
+     *     bot: \App\Models\Bot|null,
+     *     audible: bool,
      * }
      */
     public function toArray(Request $request): array
@@ -45,6 +46,7 @@ class UserEchoResource extends JsonResource
             'target'  => new ChatUserResource($this->target),
             'room'    => $this->room,
             'bot'     => $this->bot,
+            'audible' => $this->audible,
         ];
     }
 }

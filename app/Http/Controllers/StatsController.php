@@ -443,10 +443,10 @@ class StatsController extends Controller
         $users = User::query()
             ->with('group')
             ->withCount([
-                'messages' => fn ($query) => $query->where('chatroom_id', '!=', 0), // Exclude private chatbox messages;
+                'messages' => fn ($query) => $query->whereNotNull('chatroom_id'), // Exclude private chatbox messages;
             ])
             ->withSum(
-                ['messages as characters_typed' => fn ($query) => $query->where('chatroom_id', '!=', 0)],  // Exclude private chatbox messages
+                ['messages as characters_typed' => fn ($query) => $query->whereNotNull('chatroom_id')],  // Exclude private chatbox messages
                 DB::raw('CHAR_LENGTH(message)')
             )
             ->orderByDesc('messages_count')
