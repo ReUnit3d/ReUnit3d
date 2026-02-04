@@ -14,6 +14,7 @@
 - [Server Management](server_management.md)
 - [Meilisearch Setup](meilisearch_setup.md)
 - [UNIT3D-Announce](unit3d_announce.md)
+- [SystemD Migration](systemd_migration.md)
 
 # Performance & Optimization
 
