@@ -25,25 +25,47 @@ sudo nano /etc/systemd/system/unit3d-announce.service
 Add the following:
 
 ```ini
+# /etc/systemd/system/unit3d-announce.service
+#
+# Systemd service unit for UNIT3D-Announce
+
 [Unit]
-Description=UNIT3D Announce Server
-After=network.target
+Description=UNIT3D Announce Tracker
+Documentation=https://github.com/Roardom/UNIT3D-Announce
+After=network.target mysql.service
+Wants=mysql.service
 
 [Service]
 Type=simple
 User=www-data
 Group=www-data
 WorkingDirectory=/var/www/html/unit3d-announce
+
+# Environment file for the tracker
+EnvironmentFile=/var/www/html/unit3d-announce/.env
+
+# Main process
 ExecStart=/var/www/html/unit3d-announce/target/release/unit3d-announce
-Restart=always
+
+# Restart policy
+Restart=on-failure
 RestartSec=5
 
+# Resource limits (adjust based on your server)
+# UNIT3D-Announce is very lightweight (~50k req/s per core)
+LimitNOFILE=65535
+
 # Security hardening
+NoNewPrivileges=true
 ProtectSystem=strict
 ProtectHome=true
 PrivateTmp=true
-NoNewPrivileges=true
-ReadWritePaths=/var/www/html/unit3d-announce
+ReadWritePaths=/var/www/html/unit3d-announce /var/www/html/storage/logs
+
+# Logging - goes to journald, viewable with: journalctl -u unit3d-announce
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=unit3d-announce
 
 [Install]
 WantedBy=multi-user.target
@@ -60,25 +82,46 @@ sudo nano /etc/systemd/system/unit3d-queue@.service
 Add the following:
 
 ```ini
+# /etc/systemd/system/unit3d-queue@.service
+#
+# Systemd template unit for Laravel Queue Workers
+
 [Unit]
 Description=UNIT3D Queue Worker %i
-After=network.target mysql.service redis-server.service
+Documentation=https://laravel.com/docs/queues
+After=network.target mysql.service redis.service
+Wants=mysql.service redis.service
 
 [Service]
 Type=simple
 User=www-data
 Group=www-data
 WorkingDirectory=/var/www/html
-ExecStart=/usr/bin/php artisan queue:work --sleep=3 --tries=1 --max-jobs=1000 --max-time=3600
+
+# Main process - runs one queue worker
+# --tries=1: Retry failed jobs once
+# --max-jobs=1000: Restart after processing 1000 jobs (prevents memory leaks)
+# --max-time=3600: Restart after 1 hour (ensures fresh connections)
+ExecStart=/usr/bin/php /var/www/html/artisan queue:work --tries=1 --max-jobs=1000 --max-time=3600
+
+# Graceful stop - let the current job finish
+TimeoutStopSec=3605
+
+# Restart policy
 Restart=always
-RestartSec=5
+RestartSec=3
 
 # Security hardening
+NoNewPrivileges=true
 ProtectSystem=strict
 ProtectHome=true
 PrivateTmp=true
-NoNewPrivileges=true
 ReadWritePaths=/var/www/html/storage /var/www/html/bootstrap/cache
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=unit3d-queue-%i
 
 [Install]
 WantedBy=multi-user.target
@@ -93,25 +136,43 @@ sudo nano /etc/systemd/system/unit3d-reverb.service
 Add the following:
 
 ```ini
+# /etc/systemd/system/unit3d-reverb.service
+#
+# Systemd service unit for Laravel Reverb (WebSocket server for UNIT3D Chat)
+
 [Unit]
-Description=UNIT3D Laravel Reverb WebSocket Server
-After=network.target
+Description=UNIT3D Chat Server (Laravel Reverb)
+Documentation=https://laravel.com/docs/reverb
+After=network.target mysql.service redis.service
+Wants=mysql.service redis.service
 
 [Service]
 Type=simple
 User=www-data
 Group=www-data
 WorkingDirectory=/var/www/html
-ExecStart=/usr/bin/php artisan reverb:start --no-interaction
-Restart=always
+
+# Main process
+ExecStart=/usr/bin/php /var/www/html/artisan reverb:start --no-interaction
+
+# Graceful shutdown
+TimeoutStopSec=30
+
+# Restart policy
+Restart=on-failure
 RestartSec=5
 
 # Security hardening
+NoNewPrivileges=true
 ProtectSystem=strict
 ProtectHome=true
 PrivateTmp=true
-NoNewPrivileges=true
 ReadWritePaths=/var/www/html/storage /var/www/html/bootstrap/cache
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=unit3d-reverb
 
 [Install]
 WantedBy=multi-user.target
