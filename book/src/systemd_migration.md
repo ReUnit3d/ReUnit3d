@@ -18,6 +18,9 @@ Systemd offers several advantages over Supervisor for managing UNIT3D services:
 
 ### UNIT3D-Announce
 
+> [!CAUTION]
+> Only create this Systemd unit file if usings rust based unit3d-announce!
+
 ```sh
 sudo nano /etc/systemd/system/unit3d-announce.service
 ```
