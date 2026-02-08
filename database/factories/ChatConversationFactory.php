@@ -20,15 +20,15 @@ use App\Models\Bot;
 use App\Models\Chatroom;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Models\UserEcho;
+use App\Models\ChatConversation;
 
-/** @extends Factory<UserEcho> */
-class UserEchoFactory extends Factory
+/** @extends Factory<ChatConversation> */
+class ChatConversationFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      */
-    protected $model = UserEcho::class;
+    protected $model = ChatConversation::class;
 
     /**
      * Define the model's default state.
@@ -40,6 +40,7 @@ class UserEchoFactory extends Factory
             'room_id'   => Chatroom::factory(),
             'target_id' => User::factory(),
             'bot_id'    => Bot::factory(),
+            'audible'   => $this->faker->boolean(),
         ];
     }
 }

@@ -433,23 +433,13 @@ final class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
-     * Get the echo settings for the user.
-     *
-     * @return HasMany<UserEcho, $this>
-     */
-    public function echoes(): HasMany
-    {
-        return $this->hasMany(UserEcho::class);
-    }
-
-    /**
      * Get the audible settings for the user.
      *
-     * @return HasMany<UserAudible, $this>
+     * @return HasMany<ChatConversation, $this>
      */
-    public function audibles(): HasMany
+    public function chatConversations(): HasMany
     {
-        return $this->hasMany(UserAudible::class);
+        return $this->hasMany(ChatConversation::class);
     }
 
     /**

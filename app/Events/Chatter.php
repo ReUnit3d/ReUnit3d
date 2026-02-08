@@ -30,7 +30,7 @@ class Chatter implements ShouldBroadcastNow
     use InteractsWithSockets;
     use SerializesModels;
 
-    public ?AnonymousResourceCollection $echoes = null;
+    public ?AnonymousResourceCollection $conversations = null;
 
     public ?ChatMessageResource $message = null;
 
@@ -42,30 +42,25 @@ class Chatter implements ShouldBroadcastNow
      */
     public ?array $ping = null;
 
-    public ?AnonymousResourceCollection $audibles = null;
-
     /**
      * Chatter Constructor.
      */
     public function __construct(
-        /** @var 'echo'|'audible'|'new.message'|'new.bot'|'new.ping' $type */
+        /** @var 'conversations'|'new.message'|'new.bot'|'new.ping' $type */
         public string $type,
         public int $target,
         /** @var (
-         *      $type is 'echo'        ? AnonymousResourceCollection
-         *   : ($type is 'audible'     ? AnonymousResourceCollection
-         *   : ($type is 'new.message' ? ChatMessageResource
-         *   : ($type is 'new.bot'     ? ChatMessageResource
-         *   : ($type is 'new.ping'    ? array{type: 'bot'|'target', id: int}
+         *      $type is 'conversations' ? AnonymousResourceCollection
+         *   : ($type is 'new.message'   ? ChatMessageResource
+         *   : ($type is 'new.bot'       ? ChatMessageResource
+         *   : ($type is 'new.ping'      ? array{type: 'bot'|'target', id: int}
          *   : never
-         * ))))) $payload
+         * )))) $payload
          */
         mixed $payload,
     ) {
-        if ($type == 'echo') {
-            $this->echoes = $payload;
-        } elseif ($type == 'audible') {
-            $this->audibles = $payload;
+        if ($type == 'conversations') {
+            $this->conversations = $payload;
         } elseif ($type == 'new.message') {
             $this->message = $payload;
         } elseif ($type == 'new.bot') {

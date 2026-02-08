@@ -144,21 +144,23 @@
             </div>
         </header>
         <menu id="chatbox_tabs" class="panel__tabs" role="tablist">
-            <template x-for="echo in echoes" :key="echo.id">
+            <template x-for="conversation in conversations" :key="conversation.id">
                 <li
-                    x-show="echo.room && echo.room.name && echo.room.name.length > 0"
+                    x-show="conversation.room && conversation.room.name && conversation.room.name.length > 0"
                     class="panel__tab chatbox__tab"
-                    :class="state.chat.tab && echo.room && state.chat.tab === echo.room.name && 'panel__tab--active'"
+                    :class="state.chat.tab && conversation.room && state.chat.tab === conversation.room.name && 'panel__tab--active'"
                     role="tab"
-                    @click.prevent="changeTab('room', echo.room.id)"
+                    @click.prevent="changeTab('room', conversation.room.id)"
                 >
                     <i
                         class="fa fa-comment"
-                        :class="checkPings('room', echo.room && echo.room.id ? echo.room.id : 0) ? 'fa-beat text-success' : 'text-danger'"
+                        :class="checkPings('room', conversation.room && conversation.room.id ? conversation.room.id : 0) ? 'fa-beat text-success' : 'text-danger'"
                     ></i>
-                    <span x-text="echo.room && echo.room.name ? echo.room.name : ''"></span>
+                    <span
+                        x-text="conversation.room && conversation.room.name ? conversation.room.name : ''"
+                    ></span>
                     <button
-                        x-show="state.chat.tab && echo.room && state.chat.tab === echo.room.name"
+                        x-show="state.chat.tab && conversation.room && state.chat.tab === conversation.room.name"
                         class="chatbox__tab-delete-button"
                         @click.prevent="leaveRoom(state.chat.room)"
                     >
@@ -166,24 +168,29 @@
                     </button>
                 </li>
             </template>
-            <template x-for="echo in echoes" :key="echo.id">
+            <template x-for="conversation in conversations" :key="conversation.id">
                 <li
-                    x-show="echo.target && echo.target.id >= 3 && echo.target.username && echo.target.username.length > 0"
+                    x-show="
+                        conversation.target &&
+                            conversation.target.id >= 3 &&
+                            conversation.target.username &&
+                            conversation.target.username.length > 0
+                    "
                     class="panel__tab chatbox__tab"
-                    :class="state.chat.target >= 3 && echo.target && state.chat.target === echo.target.id && 'panel__tab--active'"
+                    :class="state.chat.target >= 3 && conversation.target && state.chat.target === conversation.target.id && 'panel__tab--active'"
                     role="tab"
-                    @click.prevent="changeTab('target', echo.target.id)"
+                    @click.prevent="changeTab('target', conversation.target.id)"
                 >
                     <i
                         class="fa fa-comment"
-                        :class="checkPings('target', echo.target && echo.target.id ? echo.target.id : 0) ? 'fa-beat text-success' : 'text-danger'"
+                        :class="checkPings('target', conversation.target && conversation.target.id ? conversation.target.id : 0) ? 'fa-beat text-success' : 'text-danger'"
                     ></i>
                     @
                     <span
-                        x-text="echo.target && echo.target.username ? echo.target.username : ''"
+                        x-text="conversation.target && conversation.target.username ? conversation.target.username : ''"
                     ></span>
                     <button
-                        x-show="state.chat.target >= 3 && echo.target && state.chat.target === echo.target.id"
+                        x-show="state.chat.target >= 3 && conversation.target && state.chat.target === conversation.target.id"
                         class="chatbox__tab-delete-button"
                         @click.prevent="leaveTarget(state.chat.target)"
                     >
@@ -191,22 +198,29 @@
                     </button>
                 </li>
             </template>
-            <template x-for="echo in echoes" :key="echo.id">
+            <template x-for="conversation in conversations" :key="conversation.id">
                 <li
-                    x-show="echo.bot && echo.bot.id >= 1 && echo.bot.name && echo.bot.name.length > 0"
+                    x-show="
+                        conversation.bot &&
+                            conversation.bot.id >= 1 &&
+                            conversation.bot.name &&
+                            conversation.bot.name.length > 0
+                    "
                     class="panel__tab chatbox__tab"
-                    :class="state.chat.bot > 0 && echo.bot && state.chat.bot === echo.bot.id && 'panel__tab--active'"
+                    :class="state.chat.bot > 0 && conversation.bot && state.chat.bot === conversation.bot.id && 'panel__tab--active'"
                     role="tab"
-                    @click.prevent="changeTab('bot', echo.bot.id)"
+                    @click.prevent="changeTab('bot', conversation.bot.id)"
                 >
                     <i
                         class="fa fa-comment"
-                        :class="checkPings('bot', echo.bot && echo.bot.id ? echo.bot.id : 0) ? 'fa-beat text-success' : 'text-danger'"
+                        :class="checkPings('bot', conversation.bot && conversation.bot.id ? conversation.bot.id : 0) ? 'fa-beat text-success' : 'text-danger'"
                     ></i>
                     @
-                    <span x-text="echo.bot && echo.bot.name ? echo.bot.name : ''"></span>
+                    <span
+                        x-text="conversation.bot && conversation.bot.name ? conversation.bot.name : ''"
+                    ></span>
                     <button
-                        x-show="state.chat.bot > 0 && echo.bot && state.chat.bot === echo.bot.id"
+                        x-show="state.chat.bot > 0 && conversation.bot && state.chat.bot === conversation.bot.id"
                         class="chatbox__tab-delete-button"
                         @click.prevent="leaveBot(state.chat.bot)"
                     >

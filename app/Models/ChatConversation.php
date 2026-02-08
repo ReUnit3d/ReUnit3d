@@ -20,9 +20,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use AllowDynamicProperties;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * App\Models\UserAudible.
+ * App\Models\ChatConversation.
  *
  * @property int                             $id
  * @property int                             $user_id
@@ -30,14 +31,16 @@ use AllowDynamicProperties;
  * @property int|null                        $target_id
  * @property int|null                        $bot_id
  * @property bool                            $status
+ * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  */
 #[AllowDynamicProperties]
-final class UserAudible extends Model
+final class ChatConversation extends Model
 {
-    /** @use HasFactory<\Database\Factories\UserAudibleFactory> */
+    /** @use HasFactory<\Database\Factories\ChatConversationFactory> */
     use HasFactory;
+    use SoftDeletes;
 
     /**
      * The attributes that aren't mass assignable.

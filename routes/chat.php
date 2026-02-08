@@ -36,16 +36,15 @@ Route::middleware(['auth', 'banned'])->group(function (): void {
         Route::get('/bots', [App\Http\Controllers\API\ChatController::class, 'bots']);
 
         /* Audibles */
-        Route::get('/audibles', [App\Http\Controllers\API\ChatController::class, 'audibles']);
         Route::post('/audibles/toggle/chatroom', [App\Http\Controllers\API\ChatController::class, 'toggleRoomAudible']);
         Route::post('/audibles/toggle/target', [App\Http\Controllers\API\ChatController::class, 'toggleTargetAudible']);
         Route::post('/audibles/toggle/bot', [App\Http\Controllers\API\ChatController::class, 'toggleBotAudible']);
 
-        /* Echoes */
-        Route::get('/echoes', [App\Http\Controllers\API\ChatController::class, 'echoes']);
-        Route::post('/echoes/delete/chatroom', [App\Http\Controllers\API\ChatController::class, 'deleteRoomEcho']);
-        Route::post('/echoes/delete/target', [App\Http\Controllers\API\ChatController::class, 'deleteTargetEcho']);
-        Route::post('/echoes/delete/bot', [App\Http\Controllers\API\ChatController::class, 'deleteBotEcho']);
+        /* Conversations */
+        Route::get('/conversations', [App\Http\Controllers\API\ChatController::class, 'conversations']);
+        Route::post('/conversations/delete/chatroom', [App\Http\Controllers\API\ChatController::class, 'deleteRoomConversation']);
+        Route::post('/conversations/delete/target', [App\Http\Controllers\API\ChatController::class, 'deleteTargetConversation']);
+        Route::post('/conversations/delete/bot', [App\Http\Controllers\API\ChatController::class, 'deleteBotConversation']);
 
         /* Messages */
         Route::post('/messages', [App\Http\Controllers\API\ChatController::class, 'createMessage']);
