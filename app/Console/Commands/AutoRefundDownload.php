@@ -19,7 +19,6 @@ namespace App\Console\Commands;
 use App\Models\History;
 use Exception;
 use Illuminate\Console\Command;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Throwable;
 
@@ -46,7 +45,6 @@ class AutoRefundDownload extends Command
      */
     final public function handle(): void
     {
-        $now = Carbon::now();
         $MIN_SEEDTIME = config('hitrun.seedtime');
         $FULL_REFUND_SEEDTIME = 12 * 30 * 24 * 60 * 60 + $MIN_SEEDTIME;
         $COMMAND_RUN_PERIOD = 24 * 60 * 60; // This command is run every 24 hours
@@ -60,7 +58,7 @@ class AutoRefundDownload extends Command
             ->where('history.seeder', '=', 1)
             ->where('history.seedtime', '>=', $MIN_SEEDTIME)
             ->where('history.seedtime', '<=', $FULL_REFUND_SEEDTIME + $MIN_SEEDTIME + $COMMAND_RUN_PERIOD)
-            ->where('history.created_at', '<=', $now->copy()->subSeconds($MIN_SEEDTIME))
+            ->where('history.created_at', '<=', now()->subSeconds($MIN_SEEDTIME))
             ->whereColumn('torrents.user_id', '!=', 'history.user_id')
             ->when(!config('other.refundable'), fn ($query) => $query->where(
                 fn ($query) => $query

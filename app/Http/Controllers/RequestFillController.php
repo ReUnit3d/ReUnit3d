@@ -22,7 +22,6 @@ use App\Models\TorrentRequest;
 use App\Notifications\NewRequestFill;
 use App\Notifications\NewRequestFillReject;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
 
 /**
  * @see \Tests\Todo\Feature\Http\Controllers\RequestControllerTest
@@ -44,7 +43,7 @@ class RequestFillController extends Controller
         $torrentRequest->update([
             'filled_by'   => $request->user()->id,
             'torrent_id'  => $torrent->id,
-            'filled_when' => Carbon::now(),
+            'filled_when' => now(),
             'filled_anon' => $request->filled_anon,
         ]);
 

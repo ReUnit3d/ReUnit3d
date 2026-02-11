@@ -18,7 +18,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Group;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class GroupController extends Controller
@@ -31,10 +30,10 @@ class GroupController extends Controller
         $user = $request->user();
 
         return view('group.index', [
-            'current'           => Carbon::now(),
+            'current'           => now(),
             'user'              => $user,
             'user_avg_seedtime' => DB::table('history')->where('user_id', '=', $user->id)->avg('seedtime'),
-            'user_account_age'  => (int) Carbon::now()->diffInSeconds($user->created_at, true),
+            'user_account_age'  => (int) now()->diffInSeconds($user->created_at, true),
             'user_seed_size'    => $user->seedingTorrents()->sum('size'),
             'user_uploads'      => $user->torrents()->count(),
             'groups'            => Group::query()->orderBy('position')->where('is_modo', '=', 0)->get(),

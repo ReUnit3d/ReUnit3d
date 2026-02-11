@@ -40,7 +40,6 @@ use App\Models\User;
 use App\Notifications\NewUpload;
 use App\Notifications\NewWishListNotice;
 use App\Services\Unit3dAnnounce;
-use Illuminate\Support\Carbon;
 
 class TorrentHelper
 {
@@ -49,8 +48,8 @@ class TorrentHelper
         $appurl = config('app.url');
 
         $torrent = Torrent::query()->with('user')->withoutGlobalScope(ApprovedScope::class)->findOrFail($id);
-        $torrent->created_at = Carbon::now();
-        $torrent->bumped_at = Carbon::now();
+        $torrent->created_at = now();
+        $torrent->bumped_at = now();
         $torrent->status = ModerationStatus::APPROVED;
         $torrent->moderated_at = now();
         $torrent->moderated_by = (int) auth()->id();

@@ -23,7 +23,6 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Support\Carbon;
 
 class FailedLogin extends Notification implements ShouldQueue
 {
@@ -79,7 +78,7 @@ class FailedLogin extends Notification implements ShouldQueue
      */
     public function toArray(object $notifiable): array
     {
-        return ['ip' => $this->ip, 'time' => Carbon::now()];
+        return ['ip' => $this->ip, 'time' => now()];
     }
 
     /**
@@ -87,7 +86,7 @@ class FailedLogin extends Notification implements ShouldQueue
      */
     public function toMail(object $notifiable): MailMessage
     {
-        return (new MailMessage())->error()->subject(trans('email.fail-login-subject'))->greeting(trans('email.fail-login-greeting'))->line(trans('email.fail-login-line1'))->line(trans('email.fail-login-line2', ['ip' => $this->ip, 'host' => gethostbyaddr($this->ip), 'time' => Carbon::now()->__toString()]));
+        return (new MailMessage())->error()->subject(trans('email.fail-login-subject'))->greeting(trans('email.fail-login-greeting'))->line(trans('email.fail-login-line1'))->line(trans('email.fail-login-line2', ['ip' => $this->ip, 'host' => gethostbyaddr($this->ip), 'time' => now()->__toString()]));
     }
 
     /**

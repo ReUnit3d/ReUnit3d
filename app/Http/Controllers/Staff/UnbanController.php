@@ -22,7 +22,6 @@ use App\Models\Ban;
 use App\Models\User;
 use App\Notifications\UserBanExpire;
 use App\Services\Unit3dAnnounce;
-use Illuminate\Support\Carbon;
 
 /**
  * @see \Tests\Todo\Feature\Http\Controllers\Staff\BanControllerTest
@@ -48,7 +47,7 @@ class UnbanController extends Controller
             'owned_by'     => $user->id,
             'created_by'   => $staff->id,
             'unban_reason' => $request->unban_reason,
-            'removed_at'   => Carbon::now(),
+            'removed_at'   => now(),
         ]);
 
         cache()->forget('user:'.$user->passkey);

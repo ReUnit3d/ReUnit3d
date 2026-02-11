@@ -66,7 +66,7 @@ class AutoSoftDeleteDisabledUsers extends Command
         }
 
         $users = User::query()->whereRelation('group', 'slug', '=', 'disabled')
-            ->where('disabled_at', '<', now()->copy()->subDays(config('pruning.soft_delete')))
+            ->where('disabled_at', '<', now()->subDays(config('pruning.soft_delete')))
             ->get();
 
         foreach ($users as $user) {

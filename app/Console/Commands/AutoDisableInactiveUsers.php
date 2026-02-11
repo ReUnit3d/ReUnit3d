@@ -21,7 +21,6 @@ use App\Models\Group;
 use App\Models\User;
 use App\Services\Unit3dAnnounce;
 use Illuminate\Console\Command;
-use Illuminate\Support\Carbon;
 use Exception;
 use Throwable;
 
@@ -54,19 +53,17 @@ class AutoDisableInactiveUsers extends Command
 
         $disabledGroupId = Group::query()->where('slug', '=', 'disabled')->soleValue('id');
 
-        $current = Carbon::now();
-
         User::query()
             ->whereIntegerInRaw('group_id', config('pruning.group_ids'))
-            ->where('created_at', '<', $current->copy()->subDays(config('pruning.account_age')))
-            ->where('last_login', '<', $current->copy()->subDays(config('pruning.last_login')))
+            ->where('created_at', '<', now()->subDays(config('pruning.account_age')))
+            ->where('last_login', '<', now()->subDays(config('pruning.last_login')))
             ->whereDoesntHave('seedingTorrents')
             ->chunk(100, function ($users) use ($disabledGroupId): void {
                 foreach ($users as $user) {
                     $user->update([
                         'group_id'     => $disabledGroupId,
                         'can_download' => false,
-                        'disabled_at'  => Carbon::now(),
+                        'disabled_at'  => now(),
                     ]);
 
                     cache()->forget('user:'.$user->passkey);
