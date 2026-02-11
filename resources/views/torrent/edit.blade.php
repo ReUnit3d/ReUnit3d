@@ -229,7 +229,7 @@
                                     "
                                     @selected(old('region_id') === $region->id)
                                 >
-                                    {{ $region->name }}
+                                    {{ $region->name . ' (' . __('regions.' . $region->name) . ')' }}
                                 </option>
                             @endforeach
                         </select>

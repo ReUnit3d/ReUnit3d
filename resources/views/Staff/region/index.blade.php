@@ -29,6 +29,7 @@
                 <thead>
                     <tr>
                         <th>{{ __('common.position') }}</th>
+                        <th>{{ __('common.code') }}</th>
                         <th>{{ __('common.name') }}</th>
                         <th>{{ __('common.action') }}</th>
                     </tr>
@@ -41,6 +42,9 @@
                                 <a href="{{ route('staff.regions.edit', ['region' => $region]) }}">
                                     {{ $region->name }}
                                 </a>
+                            </td>
+                            <td>
+                                {{ __('regions.' . $region->name) }}
                             </td>
                             <td>
                                 <menu class="data-table__actions">
@@ -61,7 +65,8 @@
                                         </button>
                                         <dialog class="dialog" x-bind="dialogElement">
                                             <h4 class="dialog__heading">
-                                                Delete torrent region: {{ $region->name }}
+                                                Delete torrent region:
+                                                {{ $region->name . ' (' . __('regions.' . $region->name) . ')' }}
                                             </h4>
                                             <form
                                                 class="dialog__form"
@@ -92,7 +97,7 @@
                                                         ></option>
                                                         @foreach ($regions as $region)
                                                             <option value="{{ $region->id }}">
-                                                                {{ $region->name }}
+                                                                {{ $region->name . ' (' . __('regions.' . $region->name) . ')' }}
                                                             </option>
                                                         @endforeach
                                                     </select>
