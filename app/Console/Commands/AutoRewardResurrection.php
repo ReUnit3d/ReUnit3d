@@ -22,7 +22,6 @@ use App\Repositories\ChatRepository;
 use App\Services\Unit3dAnnounce;
 use Exception;
 use Illuminate\Console\Command;
-use Illuminate\Support\Carbon;
 use Throwable;
 
 class AutoRewardResurrection extends Command
@@ -83,9 +82,9 @@ class AutoRewardResurrection extends Command
                     $torrentUrl = href_torrent($resurrection->torrent);
 
                     $resurrection->torrent->update([
-                        'bumped_at' => Carbon::now(),
+                        'bumped_at' => now(),
                         'free'      => 100,
-                        'fl_until'  => Carbon::now()->addDays(3),
+                        'fl_until'  => now()->addDays(3),
                     ]);
 
                     $this->chatRepository->systemMessage(

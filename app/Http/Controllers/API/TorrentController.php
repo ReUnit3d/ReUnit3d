@@ -40,7 +40,6 @@ use App\Traits\TorrentMeta;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Meilisearch\Endpoints\Indexes;
@@ -190,7 +189,7 @@ class TorrentController extends BaseController
 
         /** @phpstan-ignore property.notFound (Larastan doesn't yet support loadExists()) */
         if (($user->group->is_modo || $user->internals_exists) && isset($du_until)) {
-            $torrent->du_until = Carbon::now()->addDays($request->integer('du_until'));
+            $torrent->du_until = now()->addDays($request->integer('du_until'));
         }
 
         /** @phpstan-ignore property.notFound (Larastan doesn't yet support loadExists()) */
@@ -199,12 +198,12 @@ class TorrentController extends BaseController
 
         /** @phpstan-ignore property.notFound (Larastan doesn't yet support loadExists()) */
         if (($user->group->is_modo || $user->internals_exists) && isset($fl_until)) {
-            $torrent->fl_until = Carbon::now()->addDays($request->integer('fl_until'));
+            $torrent->fl_until = now()->addDays($request->integer('fl_until'));
         }
 
         /** @phpstan-ignore property.notFound (Larastan doesn't yet support loadExists()) */
         $torrent->sticky = $user->group->is_modo || $user->internals_exists ? ($request->input('sticky') ?? false) : false;
-        $torrent->moderated_at = Carbon::now();
+        $torrent->moderated_at = now();
         $torrent->moderated_by = User::SYSTEM_USER_ID;
 
         $mustBeNull = function (string $attribute, mixed $value, callable $fail): void {

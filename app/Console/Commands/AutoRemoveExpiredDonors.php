@@ -21,7 +21,6 @@ use App\Notifications\DonationExpired;
 use App\Services\Unit3dAnnounce;
 use Exception;
 use Illuminate\Console\Command;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Notification;
 use Throwable;
 
@@ -53,7 +52,7 @@ class AutoRemoveExpiredDonors extends Command
             ->where('is_lifetime', '=', false)
             ->whereHas('donations')
             ->whereDoesntHave('donations', function ($query): void {
-                $query->where('ends_at', '>', Carbon::now());
+                $query->where('ends_at', '>', now());
             })->get();
 
         Notification::send($expiredDonors, new DonationExpired());

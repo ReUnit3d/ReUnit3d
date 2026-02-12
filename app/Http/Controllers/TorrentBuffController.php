@@ -24,7 +24,6 @@ use App\Models\Torrent;
 use App\Repositories\ChatRepository;
 use App\Services\Unit3dAnnounce;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
 
 /**
  * @see \Tests\Todo\Feature\Http\Controllers\TorrentControllerTest
@@ -47,7 +46,7 @@ class TorrentBuffController extends Controller
 
         abort_unless($user->group->is_modo || $user->internals()->exists(), 403);
         $torrent = Torrent::query()->withoutGlobalScope(ApprovedScope::class)->findOrFail($id);
-        $torrent->bumped_at = Carbon::now();
+        $torrent->bumped_at = now();
         $torrent->save();
 
         // Announce To Chat
@@ -105,7 +104,7 @@ class TorrentBuffController extends Controller
 
         if ($request->freeleech != 0) {
             if ($request->fl_until !== null) {
-                $torrent->fl_until = Carbon::now()->addDays($request->integer('fl_until'));
+                $torrent->fl_until = now()->addDays($request->integer('fl_until'));
                 $this->chatRepository->systemMessage(
                     \sprintf('Ladies and Gents, [url=%s]%s[/url] has been granted %s%% FreeLeech for '.$request->fl_until.' days.', $torrentUrl, $torrent->name, $request->freeleech)
                 );
@@ -210,7 +209,7 @@ class TorrentBuffController extends Controller
             $du_until = $request->input('du_until');
 
             if ($du_until !== null) {
-                $torrent->du_until = Carbon::now()->addDays($request->integer('du_until'));
+                $torrent->du_until = now()->addDays($request->integer('du_until'));
                 $this->chatRepository->systemMessage(
                     \sprintf('Ladies and Gents, [url=%s]%s[/url] has been granted Double Upload for '.$request->input('du_until').' days.', $torrentUrl, $torrent->name)
                 );

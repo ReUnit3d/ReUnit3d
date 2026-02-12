@@ -19,7 +19,6 @@ namespace App\Console\Commands;
 use App\Models\Warning;
 use App\Notifications\UserWarningExpired;
 use App\Services\Unit3dAnnounce;
-use Carbon\Carbon;
 use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
@@ -48,15 +47,13 @@ class AutoDeactivateWarning extends Command
      */
     final public function handle(): void
     {
-        $current = Carbon::now();
-
         $usersWithExpiredWarnings = [];
 
         Warning::query()
             ->where('active', '=', true)
             ->where(
                 fn ($query) => $query
-                    ->where('expires_on', '<=', $current)
+                    ->where('expires_on', '<=', now())
                     ->orWhereHas(
                         'torrent.history',
                         fn ($query) => $query

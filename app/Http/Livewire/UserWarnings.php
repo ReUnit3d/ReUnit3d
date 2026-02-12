@@ -24,7 +24,6 @@ use App\Notifications\WarningsDeactivated;
 use App\Notifications\WarningsDeleted;
 use App\Notifications\WarningTorrentDeleted;
 use App\Traits\LivewireSort;
-use Illuminate\Support\Carbon;
 use Livewire\Attributes\Url;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
@@ -104,7 +103,7 @@ class UserWarnings extends Component
             'warned_by'  => auth()->user()->id,
             'torrent_id' => null,
             'reason'     => $this->message,
-            'expires_on' => Carbon::now()->addDays(config('hitrun.expire')),
+            'expires_on' => now()->addDays(config('hitrun.expire')),
             'active'     => true,
         ]);
 

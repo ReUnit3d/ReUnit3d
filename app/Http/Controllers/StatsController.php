@@ -40,7 +40,7 @@ class StatsController extends Controller
      */
     public function __construct()
     {
-        $this->carbon = Carbon::now()->addMinutes(10);
+        $this->carbon = now()->addMinutes(10);
     }
 
     /**

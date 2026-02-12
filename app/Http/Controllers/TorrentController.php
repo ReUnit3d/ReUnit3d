@@ -43,7 +43,6 @@ use App\Services\Igdb\IgdbScraper;
 use App\Services\Tmdb\TMDBScraper;
 use App\Services\Unit3dAnnounce;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
 use Intervention\Image\Facades\Image;
 use Exception;
 use Illuminate\Support\Facades\DB;
@@ -446,7 +445,7 @@ class TorrentController extends Controller
         $user = $request->user();
         $torrent = Torrent::query()->withoutGlobalScope(ApprovedScope::class)->findOrFail($id);
 
-        abort_unless($user->group->is_modo || ($user->id === $torrent->user_id && Carbon::now()->lt($torrent->created_at->addDay())), 403);
+        abort_unless($user->group->is_modo || ($user->id === $torrent->user_id && now()->lt($torrent->created_at->addDay())), 403);
 
         Notification::send(
             User::query()->whereHas('history', fn ($query) => $query->where('torrent_id', '=', $torrent->id))->get(),

@@ -22,7 +22,6 @@ use App\Notifications\PersonalFreeleechDeleted;
 use App\Services\Unit3dAnnounce;
 use Exception;
 use Illuminate\Console\Command;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Notification;
 use Throwable;
 
@@ -49,8 +48,7 @@ class AutoRemovePersonalFreeleech extends Command
      */
     final public function handle(): void
     {
-        $current = Carbon::now();
-        $personalFreeleech = PersonalFreeleech::query()->where('created_at', '<', $current->copy()->subDays(1))->get();
+        $personalFreeleech = PersonalFreeleech::query()->where('created_at', '<', now()->subDays(1))->get();
 
         foreach ($personalFreeleech as $pfl) {
             Notification::send(new User(['id' => $pfl->user_id]), new PersonalFreeleechDeleted());
