@@ -15,6 +15,16 @@ declare(strict_types=1);
  */
 
 use App\Enums\GlobalRateLimit;
+use App\Http\Middleware\CheckForAdmin;
+use App\Http\Middleware\CheckForModo;
+use App\Http\Middleware\CheckForOwner;
+use App\Http\Middleware\CheckIfBanned;
+use App\Http\Middleware\SetLanguage;
+use Illuminate\Auth\Middleware\Authenticate;
+use Illuminate\Auth\Middleware\EnsureEmailIsVerified;
+use Illuminate\Auth\Middleware\RedirectIfAuthenticated;
+use Illuminate\Routing\Middleware\ThrottleRequestsWithRedis;
+use Illuminate\Routing\Middleware\ValidateSignature;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\URL;
 use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController;
@@ -37,7 +47,7 @@ if (config('unit3d.proxy_scheme')) {
 if (config('unit3d.root_url_override')) {
     URL::forceRootUrl(config('unit3d.root_url_override'));
 }
-Route::middleware('language')->group(function (): void {
+Route::middleware(SetLanguage::class)->group(function (): void {
     /*
     |---------------------------------------------------------------------------------
     | Laravel Fortify Route Overrides
@@ -45,9 +55,9 @@ Route::middleware('language')->group(function (): void {
     |---------------------------------------------------------------------------------
     */
 
-    Route::middleware('guest:'.config('fortify.guard'))->group(function (): void {
+    Route::middleware(RedirectIfAuthenticated::class.':'.config('fortify.guard'))->group(function (): void {
         Route::get(RoutePath::for('login', '/login'), [AuthenticatedSessionController::class, 'create'])
-            ->middleware(['throttle:'.config('fortify.limiters.fortify-login-get')])
+            ->middleware(ThrottleRequestsWithRedis::using(config('fortify.limiters.fortify-login-get')))
             ->name('login');
     });
 
@@ -56,30 +66,30 @@ Route::middleware('language')->group(function (): void {
     | Website (Not Authorized) (Alpha Ordered)
     |---------------------------------------------------------------------------------
     */
-    Route::middleware('guest')->group(function (): void {
+    Route::middleware(RedirectIfAuthenticated::class)->group(function (): void {
         // Application Signup
         Route::get('/application', [App\Http\Controllers\Auth\ApplicationController::class, 'create'])->name('application.create');
         Route::post('/application', [App\Http\Controllers\Auth\ApplicationController::class, 'store'])->name('application.store');
 
         // Password resets
-        Route::get('/forgot-password', [App\Http\Controllers\Auth\PasswordResetLinkController::class, 'create'])->middleware('throttle:'.GlobalRateLimit::FORGOT_PASSWORD->value)->name('password.request');
-        Route::post('/forgot-password', [App\Http\Controllers\Auth\PasswordResetLinkController::class, 'store'])->middleware(['throttle:'.GlobalRateLimit::FORGOT_PASSWORD->value])->name('password.email');
-        Route::get('/reset-password/{token}', [App\Http\Controllers\Auth\NewPasswordController::class, 'create'])->middleware('throttle:'.GlobalRateLimit::RESET_PASSWORD->value)->name('password.reset');
-        Route::post('/reset-password', [App\Http\Controllers\Auth\NewPasswordController::class, 'store'])->middleware('throttle:'.GlobalRateLimit::RESET_PASSWORD->value)->name('password.update');
+        Route::get('/forgot-password', [App\Http\Controllers\Auth\PasswordResetLinkController::class, 'create'])->middleware(ThrottleRequestsWithRedis::using(GlobalRateLimit::FORGOT_PASSWORD))->name('password.request');
+        Route::post('/forgot-password', [App\Http\Controllers\Auth\PasswordResetLinkController::class, 'store'])->middleware(ThrottleRequestsWithRedis::using(GlobalRateLimit::FORGOT_PASSWORD))->name('password.email');
+        Route::get('/reset-password/{token}', [App\Http\Controllers\Auth\NewPasswordController::class, 'create'])->middleware(ThrottleRequestsWithRedis::using(GlobalRateLimit::RESET_PASSWORD))->name('password.reset');
+        Route::post('/reset-password', [App\Http\Controllers\Auth\NewPasswordController::class, 'store'])->middleware(ThrottleRequestsWithRedis::using(GlobalRateLimit::RESET_PASSWORD))->name('password.update');
 
         // Registration
-        Route::get('/register', [App\Http\Controllers\Auth\RegisteredUserController::class, 'create'])->middleware('throttle:'.GlobalRateLimit::REGISTER->value)->name('registration.create');
-        Route::post('/register', [App\Http\Controllers\Auth\RegisteredUserController::class, 'store'])->middleware('throttle:'.GlobalRateLimit::REGISTER->value)->name('registration.store');
+        Route::get('/register', [App\Http\Controllers\Auth\RegisteredUserController::class, 'create'])->middleware(ThrottleRequestsWithRedis::using(GlobalRateLimit::REGISTER))->name('registration.create');
+        Route::post('/register', [App\Http\Controllers\Auth\RegisteredUserController::class, 'store'])->middleware(ThrottleRequestsWithRedis::using(GlobalRateLimit::REGISTER))->name('registration.store');
         // This redirect must be kept until all invite emails that use the old syntax have expired
         // Hack so that Fortify can be used (allows query parameters but not route parameters)
         Route::get('/register/{code?}', fn (string $code) => to_route('registration.create', ['code' => $code]));
     });
 
-    Route::middleware(['auth', 'banned'])->group(function (): void {
+    Route::middleware([Authenticate::class, CheckIfBanned::class])->group(function (): void {
         // Email verification
         Route::get('/email/verify', [App\Http\Controllers\Auth\EmailVerificationController::class, 'create'])->name('verification.notice');
-        Route::get('/email/verify/{id}/{hash}', [App\Http\Controllers\Auth\EmailVerificationController::class, 'show'])->middleware(['signed'])->name('verification.verify');
-        Route::post('/email/verification-notification', [App\Http\Controllers\Auth\EmailVerificationController::class, 'store'])->middleware('throttle:'.GlobalRateLimit::EMAIL_VERIFICATION->value)->name('verification.send');
+        Route::get('/email/verify/{id}/{hash}', [App\Http\Controllers\Auth\EmailVerificationController::class, 'show'])->middleware(ValidateSignature::class)->name('verification.verify');
+        Route::post('/email/verification-notification', [App\Http\Controllers\Auth\EmailVerificationController::class, 'store'])->middleware(ThrottleRequestsWithRedis::using(GlobalRateLimit::EMAIL_VERIFICATION))->name('verification.send');
     });
 
     /*
@@ -87,7 +97,7 @@ Route::middleware('language')->group(function (): void {
     | Website (When Authorized) (Alpha Ordered)
     |---------------------------------------------------------------------------------
     */
-    Route::middleware(['auth', 'banned', 'verified'])->group(function (): void {
+    Route::middleware([Authenticate::class, CheckIfBanned::class, EnsureEmailIsVerified::class])->group(function (): void {
         // General
         Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home.index');
 
@@ -98,7 +108,7 @@ Route::middleware('language')->group(function (): void {
         });
 
         // Authenticated Images
-        Route::prefix('authenticated-images')->name('authenticated_images.')->middleware('throttle:'.GlobalRateLimit::AUTHENTICATED_IMAGES->value)->withoutMiddleware('throttle:'.GlobalRateLimit::WEB->value)->group(function (): void {
+        Route::prefix('authenticated-images')->name('authenticated_images.')->middleware(ThrottleRequestsWithRedis::using(GlobalRateLimit::AUTHENTICATED_IMAGES))->withoutMiddleware(ThrottleRequestsWithRedis::using(GlobalRateLimit::WEB))->group(function (): void {
             Route::get('/article-images/{article}', [App\Http\Controllers\AuthenticatedImageController::class, 'articleImage'])->name('article_image');
             Route::get('/category-images/{category}', [App\Http\Controllers\AuthenticatedImageController::class, 'categoryImage'])->name('category_image');
             Route::get('/playlist-images/{playlist}', [App\Http\Controllers\AuthenticatedImageController::class, 'playlistImage'])->name('playlist_image');
@@ -218,7 +228,7 @@ Route::middleware('language')->group(function (): void {
 
             Route::prefix('{torrentRequest}/approved-fills')->name('approved_fills.')->group(function (): void {
                 Route::post('/', [App\Http\Controllers\ApprovedRequestFillController::class, 'store'])->name('store');
-                Route::delete('/', [App\Http\Controllers\ApprovedRequestFillController::class, 'destroy'])->name('destroy')->middleware('modo');
+                Route::delete('/', [App\Http\Controllers\ApprovedRequestFillController::class, 'destroy'])->name('destroy')->middleware(CheckForModo::class);
             });
 
             Route::prefix('{torrentRequest}/bounties')->name('bounties.')->group(function (): void {
@@ -256,7 +266,7 @@ Route::middleware('language')->group(function (): void {
         Route::prefix('torrents')->group(function (): void {
             Route::get('/{id}/peers', [App\Http\Controllers\TorrentPeerController::class, 'index'])->name('peers')->whereNumber('id');
             Route::get('/{id}/history', [App\Http\Controllers\TorrentHistoryController::class, 'index'])->name('history')->whereNumber('id');
-            Route::get('/{id}/external-tracker', [App\Http\Controllers\ExternalTorrentController::class, 'show'])->name('torrents.external_tracker')->whereNumber('id')->middleware('modo');
+            Route::get('/{id}/external-tracker', [App\Http\Controllers\ExternalTorrentController::class, 'show'])->name('torrents.external_tracker')->whereNumber('id')->middleware(CheckForModo::class);
             Route::get('/download_check/{id}', [App\Http\Controllers\TorrentDownloadController::class, 'show'])->name('download_check')->whereNumber('id');
             Route::get('/download/{id}', [App\Http\Controllers\TorrentDownloadController::class, 'store'])->name('download')->whereNumber('id');
             Route::post('/{id}/reseed', [App\Http\Controllers\TorrentReseedController::class, 'store'])->name('reseed')->whereNumber('id');
@@ -343,7 +353,7 @@ Route::middleware('language')->group(function (): void {
             Route::get('/create', [App\Http\Controllers\TicketController::class, 'create'])->name('create');
             Route::post('/', [App\Http\Controllers\TicketController::class, 'store'])->name('store');
             Route::get('/{ticket}', [App\Http\Controllers\TicketController::class, 'show'])->name('show');
-            Route::delete('/{ticket}', [App\Http\Controllers\TicketController::class, 'destroy'])->name('destroy')->middleware('modo');
+            Route::delete('/{ticket}', [App\Http\Controllers\TicketController::class, 'destroy'])->name('destroy')->middleware(CheckForModo::class);
             Route::post('/{ticket}/note', [App\Http\Controllers\TicketNoteController::class, 'store'])->name('note.store');
             Route::delete('/{ticket}/note', [App\Http\Controllers\TicketNoteController::class, 'destroy'])->name('note.destroy');
             Route::post('/{ticket}/assignee', [App\Http\Controllers\TicketAssigneeController::class, 'store'])->name('assignee.store');
@@ -402,15 +412,15 @@ Route::middleware('language')->group(function (): void {
                 Route::get('/{id}', [App\Http\Controllers\TopicController::class, 'show'])->name('show')->whereNumber('id');
                 Route::get('/{id}/edit', [App\Http\Controllers\TopicController::class, 'edit'])->name('edit')->whereNumber('id');
                 Route::patch('/{id}', [App\Http\Controllers\TopicController::class, 'update'])->name('update')->whereNumber('id');
-                Route::delete('/{id}', [App\Http\Controllers\TopicController::class, 'destroy'])->name('destroy')->whereNumber('id')->middleware('modo');
-                Route::post('/{id}/close', [App\Http\Controllers\TopicController::class, 'close'])->name('close')->whereNumber('id')->middleware('modo');
-                Route::post('/{id}/open', [App\Http\Controllers\TopicController::class, 'open'])->name('open')->whereNumber('id')->middleware('modo');
-                Route::post('/{id}/pin', [App\Http\Controllers\TopicController::class, 'pin'])->name('pin')->whereNumber('id')->middleware('modo');
-                Route::post('/{id}/unpin', [App\Http\Controllers\TopicController::class, 'unpin'])->name('unpin')->whereNumber('id')->middleware('modo');
+                Route::delete('/{id}', [App\Http\Controllers\TopicController::class, 'destroy'])->name('destroy')->whereNumber('id')->middleware(CheckForModo::class);
+                Route::post('/{id}/close', [App\Http\Controllers\TopicController::class, 'close'])->name('close')->whereNumber('id')->middleware(CheckForModo::class);
+                Route::post('/{id}/open', [App\Http\Controllers\TopicController::class, 'open'])->name('open')->whereNumber('id')->middleware(CheckForModo::class);
+                Route::post('/{id}/pin', [App\Http\Controllers\TopicController::class, 'pin'])->name('pin')->whereNumber('id')->middleware(CheckForModo::class);
+                Route::post('/{id}/unpin', [App\Http\Controllers\TopicController::class, 'unpin'])->name('unpin')->whereNumber('id')->middleware(CheckForModo::class);
             });
 
             // Topic Label System
-            Route::prefix('topics')->name('topics.')->middleware('modo')->group(function (): void {
+            Route::prefix('topics')->name('topics.')->middleware(CheckForModo::class)->group(function (): void {
                 Route::patch('/{topic}/labels', [App\Http\Controllers\TopicLabelController::class, 'update'])->name('labels');
             });
 
@@ -646,7 +656,7 @@ Route::middleware('language')->group(function (): void {
         | Staff Dashboard Routes Group (When Authorized And A Staff Group) (Alpha Ordered)
         |---------------------------------------------------------------------------------
         */
-        Route::prefix('dashboard')->middleware(['modo'])->name('staff.')->group(function (): void {
+        Route::prefix('dashboard')->middleware(CheckForModo::class)->name('staff.')->group(function (): void {
             // Staff Dashboard
             Route::name('dashboard.')->group(function (): void {
                 Route::get('/', [App\Http\Controllers\Staff\HomeController::class, 'index'])->name('index');
@@ -702,7 +712,7 @@ Route::middleware('language')->group(function (): void {
             });
 
             // Backup System
-            Route::prefix('backups')->name('backups.')->middleware('owner')->group(function (): void {
+            Route::prefix('backups')->name('backups.')->middleware(CheckForOwner::class)->group(function (): void {
                 Route::get('/', [App\Http\Controllers\Staff\BackupController::class, 'index'])->name('index');
             });
 
@@ -806,7 +816,7 @@ Route::middleware('language')->group(function (): void {
             });
 
             // Commands
-            Route::prefix('commands')->middleware('owner')->group(function (): void {
+            Route::prefix('commands')->middleware(CheckForOwner::class)->group(function (): void {
                 Route::get('/', [App\Http\Controllers\Staff\CommandController::class, 'index'])->name('commands.index');
                 Route::post('/maintenance-enable', [App\Http\Controllers\Staff\CommandController::class, 'maintenanceEnable']);
                 Route::post('/maintenance-disable', [App\Http\Controllers\Staff\CommandController::class, 'maintenanceDisable']);
@@ -861,7 +871,7 @@ Route::middleware('language')->group(function (): void {
             });
 
             // Forums System
-            Route::prefix('forum-categories')->name('forum_categories.')->middleware('admin')->group(function (): void {
+            Route::prefix('forum-categories')->name('forum_categories.')->middleware(CheckForAdmin::class)->group(function (): void {
                 Route::get('/', [App\Http\Controllers\Staff\ForumCategoryController::class, 'index'])->name('index');
                 Route::get('/create', [App\Http\Controllers\Staff\ForumCategoryController::class, 'create'])->name('create');
                 Route::post('/', [App\Http\Controllers\Staff\ForumCategoryController::class, 'store'])->name('store');
@@ -870,7 +880,7 @@ Route::middleware('language')->group(function (): void {
                 Route::delete('/{forumCategory}', [App\Http\Controllers\Staff\ForumCategoryController::class, 'destroy'])->name('destroy');
             });
 
-            Route::prefix('forums')->name('forums.')->middleware('admin')->group(function (): void {
+            Route::prefix('forums')->name('forums.')->middleware(CheckForAdmin::class)->group(function (): void {
                 Route::get('/create', [App\Http\Controllers\Staff\ForumController::class, 'create'])->name('create');
                 Route::post('/', [App\Http\Controllers\Staff\ForumController::class, 'store'])->name('store');
                 Route::get('/{forum}/edit', [App\Http\Controllers\Staff\ForumController::class, 'edit'])->name('edit');
@@ -879,7 +889,7 @@ Route::middleware('language')->group(function (): void {
             });
 
             // Groups System
-            Route::prefix('groups')->name('groups.')->middleware('admin')->group(function (): void {
+            Route::prefix('groups')->name('groups.')->middleware(CheckForAdmin::class)->group(function (): void {
                 Route::get('/', [App\Http\Controllers\Staff\GroupController::class, 'index'])->name('index');
                 Route::get('/create', [App\Http\Controllers\Staff\GroupController::class, 'create'])->name('create');
                 Route::post('/', [App\Http\Controllers\Staff\GroupController::class, 'store'])->name('store');
@@ -904,7 +914,7 @@ Route::middleware('language')->group(function (): void {
             });
 
             // Laravel Log Viewer
-            Route::get('/laravel-log', App\Http\Livewire\LaravelLogViewer::class)->middleware('owner')->name('laravel-log.index');
+            Route::get('/laravel-log', App\Http\Livewire\LaravelLogViewer::class)->middleware(CheckForOwner::class)->name('laravel-log.index');
 
             // Leakers
             Route::prefix('leakers')->name('leakers.')->group(function (): void {
