@@ -21,6 +21,7 @@ use App\Enums\MiddlewareGroup;
 use App\Http\Middleware\BlockIpAddress;
 use App\Http\Middleware\UpdateLastAction;
 use HDVinnie\SecureHeaders\SecureHeadersMiddleware;
+use Illuminate\Auth\Middleware\RedirectIfAuthenticated;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Routing\Middleware\ThrottleRequestsWithRedis;
@@ -97,5 +98,17 @@ class Kernel extends HttpKernel
         MiddlewareGroup::RSS->value => [
             ThrottleRequestsWithRedis::class.':'.GlobalRateLimit::RSS->value,
         ],
+    ];
+
+    /**
+     * The application's route middleware.
+     *
+     * These middleware may be assigned to groups or used individually.
+     *
+     * @var array<string, class-string>
+     */
+    protected $middlewareAliases = [
+        'guest'    => RedirectIfAuthenticated::class,
+        'throttle' => ThrottleRequestsWithRedis::class,
     ];
 }

@@ -92,7 +92,8 @@ return [
     |
     */
 
-    'middleware' => [MiddlewareGroup::WEB->value],
+    'middleware'      => [MiddlewareGroup::WEB->value],
+    'auth_middleware' => Illuminate\Auth\Middleware\Authenticate::class,
 
     /*
     |--------------------------------------------------------------------------
