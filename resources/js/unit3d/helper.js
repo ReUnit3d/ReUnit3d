@@ -184,11 +184,8 @@ class uploadExtensionBuilder {
     }
     hook() {
         let name = document.querySelector('#title');
-        let tmdb_movie = document.querySelector('#auto_tmdb_movie');
-        let tmdb_tv = document.querySelector('#auto_tmdb_tv');
-        let imdb = document.querySelector('#autoimdb');
 
-        if (!name.value.trim() && (!tmdb_movie.value.trim() || !tmdb_tv.value.trim())) {
+        if (!name.value.trim()) {
             let torrent = document.querySelector('#torrent');
             let release;
             if (!name.value) {
