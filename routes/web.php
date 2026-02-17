@@ -914,7 +914,7 @@ Route::middleware(SetLanguage::class)->group(function (): void {
             });
 
             // Laravel Log Viewer
-            Route::get('/laravel-log', App\Http\Livewire\LaravelLogViewer::class)->middleware(CheckForOwner::class)->name('laravel-log.index');
+            Route::livewire('/laravel-log', App\Http\Livewire\LaravelLogViewer::class)->middleware(CheckForOwner::class)->name('laravel-log.index');
 
             // Leakers
             Route::prefix('leakers')->name('leakers.')->group(function (): void {
@@ -1071,10 +1071,10 @@ Route::middleware(SetLanguage::class)->group(function (): void {
             });
 
             // Torrent Downloads
-            Route::get('/torrent-downloads', App\Http\Livewire\TorrentDownloadSearch::class)->name('torrent_downloads.index');
+            Route::livewire('/torrent-downloads', App\Http\Livewire\TorrentDownloadSearch::class)->name('torrent_downloads.index');
 
             // Torrent Trump Search
-            Route::get('/torrent-trump-search', App\Http\Livewire\TorrentTrumpSearch::class)->name('torrent_trumps.index');
+            Route::livewire('/torrent-trump-search', App\Http\Livewire\TorrentTrumpSearch::class)->name('torrent_trumps.index');
 
             // Types
             Route::prefix('types')->name('types.')->group(function (): void {
