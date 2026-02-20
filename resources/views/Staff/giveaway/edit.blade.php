@@ -273,13 +273,13 @@
                                                     >
                                                         <option
                                                             value="bon"
-                                                            @selected($giveaway->type === 'bon')
+                                                            @selected($prize->type === 'bon')
                                                         >
                                                             {{ __('bon.bon') }}
                                                         </option>
                                                         <option
                                                             value="fl_tokens"
-                                                            @selected($giveaway->type === 'fl_tokens')
+                                                            @selected($prize->type === 'fl_tokens')
                                                         >
                                                             {{ __('common.fl_tokens') }}
                                                         </option>
