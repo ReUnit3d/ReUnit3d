@@ -30,7 +30,7 @@ use AllowDynamicProperties;
  * @property int                             $id
  * @property int                             $user_id
  * @property int                             $warned_by
- * @property int|null                        $torrent
+ * @property int|null                        $torrent_id
  * @property string                          $reason
  * @property \Illuminate\Support\Carbon|null $expires_on
  * @property bool                            $active
