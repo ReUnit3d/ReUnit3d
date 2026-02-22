@@ -241,6 +241,7 @@ class Movie
 
     /**
      * @throws \Illuminate\Http\Client\ConnectionException
+     * @throws MetaFetchNotFoundException
      */
     public function __construct(int $id)
     {
