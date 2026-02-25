@@ -49,6 +49,7 @@ import './components/alpine/livewireDialog';
 import './components/alpine/posterRow';
 import './components/alpine/smallBookmarkButton';
 import './components/alpine/tabs';
+import './components/alpine/ternaryCheckMark';
 import './components/alpine/toggle';
 import './components/alpine/torrentGrouping';
 
