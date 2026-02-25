@@ -1,4 +1,4 @@
-<div class="quick-search" x-data="quickSearch()" x-on:keydown.escape.window="clearSearch()">
+<div class="quick-search" x-data="quickSearch" x-on:keydown.escape.window="clearSearch()">
     <div class="quick-search__inputs">
         <input
             class="quick-search__input"
@@ -18,14 +18,14 @@
                 </article>
             </div>
         </template>
-        <template x-if="Array.isArray(searchResults) && searchResults.length === 0">
+        <template x-if="showEmptyResults">
             <div class="quick-search__results">
                 <article class="quick-search__result--empty">
                     <p class="quick-search__result-text">No results found</p>
                 </article>
             </div>
         </template>
-        <template x-if="Array.isArray(searchResults) && searchResults.length > 0">
+        <template x-if="showNonEmptyResults">
             <div class="quick-search__results" x-ref="searchResults">
                 <template x-for="result in searchResults" :key="result.id">
                     <article
@@ -59,8 +59,8 @@
         </template>
     </div>
     <script nonce="{{ HDVinnie\SecureHeaders\SecureHeaders::nonce('script') }}">
-        function quickSearch() {
-            return {
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('quickSearch', () => ({
                 searchText: '',
                 searchResults: null,
                 searchPerformed: false,
@@ -78,6 +78,12 @@
                                 return result;
                             });
                         });
+                },
+                get showEmptyResults() {
+                    return Array.isArray(this.searchResults) && this.searchResults.length === 0;
+                },
+                get showNonEmptyResults() {
+                    return Array.isArray(this.searchResults) && this.searchResults.length > 0;
                 },
                 clearSearch() {
                     this.searchText = '';
@@ -134,7 +140,7 @@
                                 </text>
                             </svg>`;
                 },
-            };
-        }
+            }));
+        });
     </script>
 </div>

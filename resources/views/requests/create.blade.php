@@ -19,19 +19,7 @@
 
 @section('main')
     @if ($user->can_request ?? $user->group->can_request)
-        <section
-            class="panelV2"
-            x-data="{
-                cat: {{ (int) $category_id }},
-                cats: JSON.parse(atob('{{ base64_encode(json_encode($categories)) }}')),
-                tmdb_movie_exists: true,
-                tmdb_tv_exists: true,
-                imdb_title_exists: true,
-                tvdb_tv_exists: true,
-                mal_anime_exists: true,
-                igdb_game_exists: true,
-            }"
-        >
+        <section class="panelV2" x-data="requestCreate">
             <h2 class="panel__heading">{{ __('request.add-request') }}</h2>
             <div class="panel__body">
                 <form class="form" method="POST" action="{{ route('requests.store') }}">
@@ -405,6 +393,20 @@
                     </p>
                 </form>
             </div>
+            <script nonce="{{ HDVinnie\SecureHeaders\SecureHeaders::nonce('script') }}">
+                document.addEventListener('alpine:init', () => {
+                    Alpine.data('requestCreate', () => ({
+                        cat: {{ (int) $category_id }},
+                        cats: {{ Js::from($categories) }},
+                        tmdb_movie_exists: true,
+                        tmdb_tv_exists: true,
+                        imdb_title_exists: true,
+                        tvdb_tv_exists: true,
+                        mal_anime_exists: true,
+                        igdb_game_exists: true,
+                    }));
+                });
+            </script>
         </section>
     @else
         <section class="panelV2">

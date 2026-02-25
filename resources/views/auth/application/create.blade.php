@@ -149,7 +149,7 @@
                             </button>
                             <button
                                 class="auth-form__button--text"
-                                x-on:click.prevent="proofs = Math.max(2, proofs - 1)"
+                                x-on:click.prevent="proofs = proofs > 2 ? proofs - 1 : 2"
                                 type="button"
                             >
                                 {{ __('common.delete') }}
