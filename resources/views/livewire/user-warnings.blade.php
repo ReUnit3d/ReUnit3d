@@ -1,4 +1,4 @@
-<section class="panelV2" x-data="{ tab: @entangle('warningTab').live }">
+<section class="panelV2" x-data="tabs($wire.entangle('warningTab').live)">
     <header class="panel__header">
         <h2 class="panel__heading">{{ __('user.warnings') }}</h2>
         @if (auth()->user()->group->is_modo)
@@ -66,28 +66,11 @@
         @endif
     </header>
     <menu class="panel__tabs">
-        <li
-            class="panel__tab"
-            role="tab"
-            x-bind:class="tab === 'automated' && 'panel__tab--active'"
-            x-on:click="tab = 'automated'"
-        >
+        <li x-bind="tabButton" data-tab="automated">
             Automated ({{ $automatedWarningsCount ?? 0 }})
         </li>
-        <li
-            class="panel__tab"
-            role="tab"
-            x-bind:class="tab === 'manual' && 'panel__tab--active'"
-            x-on:click="tab = 'manual'"
-        >
-            Manual ({{ $manualWarningsCount ?? 0 }})
-        </li>
-        <li
-            class="panel__tab"
-            role="tab"
-            x-bind:class="tab === 'deleted' && 'panel__tab--active'"
-            x-on:click="tab = 'deleted'"
-        >
+        <li x-bind="tabButton" data-tab="manual">Manual ({{ $manualWarningsCount ?? 0 }})</li>
+        <li x-bind="tabButton" data-tab="deleted">
             Soft deleted ({{ $deletedWarningsCount ?? 0 }})
         </li>
     </menu>

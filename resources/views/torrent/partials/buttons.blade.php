@@ -192,7 +192,7 @@
                     </div>
                 @endif
             </header>
-            <div x-bind="dialogForm" x-data="tabs" data-default-tab="hierarchy">
+            <div x-bind="dialogForm" x-data="tabs('hierarchy')">
                 <menu class="panel__tabs">
                     <li x-bind="tabButton" data-tab="hierarchy">Hierarchy</li>
                     <li x-bind="tabButton" data-tab="list">List</li>
