@@ -135,9 +135,6 @@ document.addEventListener('alpine:init', () => {
                 target: 0,
                 bot: 0,
                 activeTab: '',
-                activeRoom: '',
-                activeTarget: '',
-                activeBot: '',
                 listening: 1,
                 showWhispers: true,
                 showUserList: false,
@@ -159,7 +156,6 @@ document.addEventListener('alpine:init', () => {
         users: new Map(),
         pings: [],
         activePeer: new Map(),
-        scroll: true,
         channel: null,
         chatter: null,
         config: {},
@@ -169,8 +165,6 @@ document.addEventListener('alpine:init', () => {
         timestampTick: 0,
 
         init() {
-            this.state.chat.activeRoom = this.auth.chatroom.name;
-
             this.blurHandler = () => {
                 document.getElementById('chatbody').setAttribute('audio', true);
             };
@@ -372,7 +366,6 @@ document.addEventListener('alpine:init', () => {
                 this.state.message.receiver_id = 0;
                 this.state.chat.tab = newVal;
                 this.state.chat.activeTab = 'room' + newVal;
-                this.state.chat.activeRoom = newVal;
                 this.deletePing('room', newVal);
 
                 let currentRoom = this.conversations.find((o) => o.room && o.room.id == newVal);
@@ -390,7 +383,6 @@ document.addEventListener('alpine:init', () => {
                 this.state.chat.bot = 0;
                 this.state.chat.tab = newVal;
                 this.state.chat.activeTab = 'target' + newVal;
-                this.state.chat.activeTarget = newVal;
                 this.deletePing('target', newVal);
 
                 let currentTarget = this.conversations.find(
@@ -406,7 +398,6 @@ document.addEventListener('alpine:init', () => {
                 this.state.chat.target = 0;
                 this.state.chat.tab = newVal;
                 this.state.chat.activeTab = 'bot' + newVal;
-                this.state.chat.activeBot = newVal;
                 this.deletePing('bot', newVal);
 
                 let currentBot = this.conversations.find((o) => o.bot && o.bot.id == newVal);
@@ -431,7 +422,6 @@ document.addEventListener('alpine:init', () => {
 
             if (this.auth.chatroom.id === id) {
                 this.state.chat.tab = this.auth.chatroom.name;
-                this.state.chat.activeRoom = this.auth.chatroom.name;
                 this.fetchMessages();
             } else {
                 axios
@@ -439,7 +429,6 @@ document.addEventListener('alpine:init', () => {
                     .then((response) => {
                         this.auth = response.data;
                         this.state.chat.tab = this.auth.chatroom.name;
-                        this.state.chat.activeRoom = this.auth.chatroom.name;
                         this.fetchMessages();
                     })
                     .catch((error) => {
