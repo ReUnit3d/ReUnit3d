@@ -199,37 +199,20 @@ class ChatRepository
         }
     }
 
-    public function systemMessage(string $message, ?int $bot = null): static
+    public function systemMessage(string $message): void
     {
-        if ($bot) {
-            $this->message(User::SYSTEM_USER_ID, $this->systemChatroom(), $message, null, $bot);
-        } else {
-            $systemBotId = Bot::query()->where('command', 'systembot')->first()->id;
+        $systemBotId = Bot::query()->where('command', 'systembot')->value('id');
 
-            $this->message(User::SYSTEM_USER_ID, $this->systemChatroom(), $message, null, $systemBotId);
-        }
-
-        return $this;
-    }
-
-    public function systemChatroom(int|Chatroom|string|null $room = null): int
-    {
         $config = config('chat.system_chatroom');
 
-        if ($room !== null) {
-            if ($room instanceof Chatroom) {
-                $room = $room->id;
-            } elseif (\is_int($room)) {
-                $room = Chatroom::query()->findOrFail($room)->id;
-            } else {
-                $room = Chatroom::query()->where('name', '=', $room)->first()->id;
-            }
-        } elseif (\is_int($config)) {
-            $room = Chatroom::query()->findOrFail($config)->id;
-        } else {
-            $room = Chatroom::query()->where('name', '=', $config)->first()->id;
-        }
+        $systemChatroomId = Chatroom::query()
+            ->when(
+                \is_int($config),
+                fn ($query) => $query->where('id', '=', $config),
+                fn ($query) => $query->where('name', '=', $config),
+            )
+            ->value('id');
 
-        return $room;
+        $this->message(User::SYSTEM_USER_ID, $systemChatroomId, $message, null, $systemBotId);
     }
 }

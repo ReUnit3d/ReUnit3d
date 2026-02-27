@@ -577,12 +577,6 @@ parameters:
 			path: app/Providers/FortifyServiceProvider.php
 
 		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Chatroom\>\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Repositories/ChatRepository.php
-
-		-
 			message: '#^Call to function is_int\(\) with string\|null will always evaluate to false\.$#'
 			identifier: function.impossibleType
 			count: 1
