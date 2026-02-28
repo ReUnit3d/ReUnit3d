@@ -36,8 +36,6 @@ class ChatRepository
             'bot_id'      => $bot,
         ]);
 
-        $this->checkMessageLimits($roomId);
-
         broadcast(new MessageSent($message));
 
         return $message;
@@ -174,29 +172,6 @@ class ChatRepository
             ->latest('id')
             ->limit(config('chat.message_limit'))
             ->get();
-    }
-
-    public function checkMessageLimits(int $roomId): void
-    {
-        $messages = $this->messages($roomId);
-        $limit = config('chat.message_limit');
-        $count = $messages->count();
-
-        // Lets purge all old messages and keep the database to the limit settings
-        if ($count > $limit) {
-            $deleteCount = $count - $limit;
-
-            for ($x = 1; $x <= $deleteCount; $x++) {
-                $message = $messages->last();
-                echo $message['id']."\n";
-
-                $message = Message::query()->find($message->id);
-
-                if ($message->receiver_id === null) {
-                    $message->delete();
-                }
-            }
-        }
     }
 
     public function systemMessage(string $message): void
