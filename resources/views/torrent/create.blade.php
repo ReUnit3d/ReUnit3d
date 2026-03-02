@@ -41,19 +41,7 @@
 @section('page', 'page__torrent--create')
 
 @section('main')
-    <section
-        class="upload panelV2"
-        x-data="{
-            cat: {{ old('category_id', (int) $category_id) }},
-            cats: JSON.parse(atob('{{ base64_encode(json_encode($categories)) }}')),
-            tmdb_movie_exists: true,
-            tmdb_tv_exists: true,
-            imdb_title_exists: true,
-            tvdb_tv_exists: true,
-            mal_anime_exists: true,
-            igdb_game_exists: true,
-        }"
-    >
+    <section class="upload panelV2" x-data="torrentCreate">
         <h2 class="upload-title panel__heading">
             <i class="{{ config('other.font-awesome') }} fa-file"></i>
             {{ __('torrent.torrent') }}
@@ -79,7 +67,7 @@
                         name="torrent"
                         id="torrent"
                         required
-                        @change="uploadExtension.hook(); cat = $refs.catId.value"
+                        x-bind="torrentFile"
                     />
                 </p>
                 <p class="form__group">
@@ -139,7 +127,7 @@
                         class="form__select"
                         required
                         x-model="cat"
-                        @change="cats[cat].type = cats[$event.target.value].type;"
+                        x-bind="categorySelect"
                     >
                         <option hidden selected disabled value=""></option>
                         @foreach ($categories as $id => $category)
@@ -391,14 +379,7 @@
                                         : ''
                                 "
                                 x-bind:required="(cats[cat].type === 'movie' || cats[cat].type === 'tv') && imdb_title_exists"
-                                x-on:paste="
-                                    matches = $event.clipboardData.getData('text').match(/tt0*(\d{7,})/);
-
-                                    if (matches !== null) {
-                                        $el.value = Number(matches[1]);
-                                        $event.preventDefault();
-                                    }
-                                "
+                                x-bind="imdbInput"
                             />
                             <label class="form__label form__label--floating" for="autoimdb">
                                 IMDB ID
@@ -670,6 +651,43 @@
                 </p>
             </form>
         </div>
+        <script nonce="{{ HDVinnie\SecureHeaders\SecureHeaders::nonce('script') }}">
+            document.addEventListener('alpine:init', () => {
+                Alpine.data('torrentCreate', () => ({
+                    cat: {{ old('category_id', (int) $category_id) }},
+                    cats: {{ Js::from($categories) }},
+                    tmdb_movie_exists: true,
+                    tmdb_tv_exists: true,
+                    imdb_title_exists: true,
+                    tvdb_tv_exists: true,
+                    mal_anime_exists: true,
+                    igdb_game_exists: true,
+                    torrentFile: {
+                        ['x-on:change']() {
+                            uploadExtension.hook();
+                            this.cat = this.$refs.catId.value;
+                        },
+                    },
+                    imdbInput: {
+                        ['x-on:paste']() {
+                            matches = this.$event.clipboardData
+                                .getData('text')
+                                .match(/tt0*(\d{7,})/);
+
+                            if (matches !== null) {
+                                this.$el.value = Number(matches[1]);
+                                this.$event.preventDefault();
+                            }
+                        },
+                    },
+                    categorySelect: {
+                        ['x-on:change']() {
+                            this.cats[this.cat].type = this.cats[this.$event.target.value].type;
+                        },
+                    },
+                }));
+            });
+        </script>
     </section>
 @endsection
 
