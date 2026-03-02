@@ -73,8 +73,7 @@ class UserWarningExpired extends Notification implements ShouldQueue
         return (new MailMessage())
             ->greeting('Warning Expired')
             ->line('One or more of your warnings have expired or been seeded off.')
-            ->action('View Profile!', $profileUrl)
-            ->line('Thank you for using 🚀'.config('other.title'));
+            ->action('View Profile!', $profileUrl);
     }
 
     /**

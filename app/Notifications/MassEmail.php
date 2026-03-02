@@ -70,8 +70,7 @@ class MassEmail extends Notification implements ShouldQueue
         return (new MailMessage())
             ->subject($this->subject)
             ->line($this->message)
-            ->action('Login Now', route('login'))
-            ->line('Thank you for using 🚀'.config('other.title'));
+            ->action('Login Now', route('login'));
     }
 
     /**

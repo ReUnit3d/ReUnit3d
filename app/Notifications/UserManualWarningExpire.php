@@ -74,8 +74,7 @@ class UserManualWarningExpire extends Notification implements ShouldQueue
         return (new MailMessage())
             ->greeting('Manual Warning Expired!')
             ->line('Your Warning has expired!')
-            ->action('View Profile!', $profileUrl)
-            ->line('Thank you for using 🚀'.config('other.title'));
+            ->action('View Profile!', $profileUrl);
     }
 
     /**

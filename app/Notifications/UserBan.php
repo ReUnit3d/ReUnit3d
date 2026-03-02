@@ -73,8 +73,7 @@ class UserBan extends Notification implements ShouldQueue
         return (new MailMessage())
             ->greeting('You have been banned 😭')
             ->line('You have been banned from '.config('other.title').' for '.$this->ban->ban_reason)
-            ->action('Need Support?', $chatUrl)
-            ->line('Thank you for using 🚀'.config('other.title'));
+            ->action('Need Support?', $chatUrl);
     }
 
     /**

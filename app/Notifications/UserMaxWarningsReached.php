@@ -73,8 +73,7 @@ class UserMaxWarningsReached extends Notification implements ShouldQueue
         return (new MailMessage())
             ->greeting('Max Hit and Run Warnings Reached!')
             ->line('You have hit the limit on active Hit and Run Warnings! Your download privileges have been revoked!')
-            ->action('View Unsatisfied Torrents to seed off your warnings or wait until they expire!', $profileUrl)
-            ->line('Thank you for using 🚀'.config('other.title'));
+            ->action('View Unsatisfied Torrents to seed off your warnings or wait until they expire!', $profileUrl);
     }
 
     /**
