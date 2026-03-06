@@ -469,7 +469,7 @@ class TorrentSearch extends Component
                         ->where('seeder', '=', 0),
                     'history as completed' => fn ($query) => $query->where('user_id', '=', $user->id)
                         ->where('active', '=', 0)
-                        ->where('seeder', '=', 0),
+                        ->where('seeder', '=', 1),
                     'trump',
                 ])
                 ->selectRaw(<<<'SQL'
