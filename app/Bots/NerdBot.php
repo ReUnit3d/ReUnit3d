@@ -284,7 +284,7 @@ class NerdBot
             $affected = ChatConversation::query()->upsert([[
                 'user_id'    => $target->id,
                 'bot_id'     => $this->bot->id,
-                'status'     => false,
+                'audible'    => false,
                 'deleted_at' => null,
             ]], ['user_id', 'bot_id'], ['deleted_at']);
 
