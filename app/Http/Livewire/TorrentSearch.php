@@ -19,6 +19,7 @@ namespace App\Http\Livewire;
 use App\DTO\TorrentSearchFiltersDTO;
 use App\Models\Category;
 use App\Models\Distributor;
+use App\Models\PersonalFreeleech;
 use App\Models\TmdbGenre;
 use App\Models\TmdbMovie;
 use App\Models\Region;
@@ -275,7 +276,7 @@ class TorrentSearch extends Component
     }
 
     final protected bool $personalFreeleech {
-        get => cache()->get('personal_freeleech:'.auth()->id()) ?? false;
+        get => PersonalFreeleech::query()->where('user_id', '=', auth()->id())->exists();
     }
 
     /**
