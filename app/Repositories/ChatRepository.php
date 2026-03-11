@@ -45,7 +45,7 @@ class ChatRepository
     {
         $save = Message::query()->create([
             'bot_id'      => $botId,
-            'user_id'     => 1,
+            'user_id'     => User::SYSTEM_USER_ID,
             'chatroom_id' => null,
             'message'     => $message,
             'receiver_id' => $receiver,
