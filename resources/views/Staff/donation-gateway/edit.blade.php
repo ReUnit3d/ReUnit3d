@@ -41,8 +41,11 @@
                         <tr>
                             <td>
                                 <input
-                                    type="number"
+                                    type="text"
+                                    inputmode="numeric"
+                                    pattern="[0-9]+"
                                     name="position"
+                                    required
                                     value="{{ $gateway->position }}"
                                     class="form__text"
                                 />
@@ -51,6 +54,7 @@
                                 <input
                                     type="text"
                                     name="name"
+                                    required
                                     value="{{ $gateway->name }}"
                                     class="form__text"
                                 />
@@ -59,6 +63,7 @@
                                 <input
                                     type="text"
                                     name="address"
+                                    required
                                     value="{{ $gateway->address }}"
                                     class="form__text"
                                 />
