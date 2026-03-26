@@ -52,7 +52,7 @@ Clone the UNIT3D repository to your local environment:
 2. Clone the repository:
 
     ```sh
-    git clone git@github.com:HDInnovations/UNIT3D.git
+    git clone git@github.com:ReUnit3d/ReUnit3d.git
     ```
 
 ## Step 2: Composer dependency installation

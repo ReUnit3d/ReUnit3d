@@ -12,10 +12,10 @@ create-missing = true
 [output.html]
 default-theme = "mocha"
 preferred-dark-theme = "mocha"
-git-repository-url = "https://github.com/HDInnovations/UNIT3D"
+git-repository-url = "https://github.com/ReUnit3d/ReUnit3d"
 git-repository-icon = "fab-github"
-edit-url-template = "https://github.com/HDInnovations/UNIT3D/edit/master/book/{path}"
-site-url = "/UNIT3D/"
+edit-url-template = "https://github.com/ReUnit3d/ReUnit3d/edit/master/book/{path}"
+site-url = "/docs/"
 #cname = "docs.unit3d.dev"
 additional-css = ["./theme/catppuccin.css"]
 
