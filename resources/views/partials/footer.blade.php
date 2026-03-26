@@ -256,12 +256,12 @@
             Site and design &copy;
             {{ date('Y', strtotime(config('other.birthdate'))) }}-{{ date('Y') }}
             {{ config('other.title') }} |
-            <a href="https://github.com/HDInnovations/UNIT3D">
+            <a href="https://github.com/ReUnit3d/ReUnit3d">
                 UNIT3D {{ config('unit3d.version') }}
             </a>
             @if (config('announce.external_tracker.is_enabled'))
                 +
-                <a href="https://github.com/HDInnovations/UNIT3D-Announce">UNIT3D-Announce</a>
+                <a href="https://github.com/ReUnit3d/ReUnit3d-Announce">UNIT3D-Announce</a>
             @endif
         </p>
     </div>

@@ -2,7 +2,7 @@
 
 Contributions are **welcome**. Please make all pull requests against the `development` branch and NOT `master` which is only for releases.
 
-We accept contributions via Pull Requests on [Github](https://github.com/HDInnovations/UNIT3D).
+We accept contributions via Pull Requests on [Github](https://github.com/ReUnit3d/ReUnit3d).
 
 **Working on your first Pull Request?** You can learn how from this *free* series [How to Contribute to an Open Source Project on GitHub](https://egghead.io/courses/how-to-contribute-to-an-open-source-project-on-github)
 

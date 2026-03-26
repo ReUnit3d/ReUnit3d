@@ -57,7 +57,7 @@ Once installed, launch PHPStorm
 
 ## Step 1: clone the repository
 
-Firstly, clone the UNIT3D repository to your local environment by visiting [UNIT3D Repo](https://github.com/HDInnovations/UNIT3D). Then click the blue colored code button and select `Open with Github Desktop`. Once Github Desktop is open set you local path to clone to like `/Users/HDVinnie/Documents/Personal/UNIT3D`
+Firstly, clone the UNIT3D repository to your local environment by visiting [UNIT3D Repo](https://github.com/ReUnit3d/ReUnit3d). Then click the blue colored code button and select `Open with Github Desktop`. Once Github Desktop is open set you local path to clone to like `/Users/HDVinnie/Documents/Personal/UNIT3D`
 
 ## Step 2: open the project in PHPStorm
 

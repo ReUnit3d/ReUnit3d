@@ -7,6 +7,6 @@ UNIT3D-Announce is an optional external announce service written in rust that is
 
 Refer to the upstream documentation for configuration and usage details.
 
-- **Consult** the [README](https://github.com/HDInnovations/UNIT3D-Announce/blob/main/README.md) for installation and usage instructions.
+- **Consult** the [README](https://github.com/ReUnit3d/ReUnit3d-Announce/blob/main/README.md) for installation and usage instructions.
 
-- **Review** the [`.env.example`](https://github.com/HDInnovations/UNIT3D-Announce/blob/main/.env.example) to configure required variables.
+- **Review** the [`.env.example`](https://github.com/ReUnit3d/ReUnit3d-Announce/blob/main/.env.example) to configure required variables.
